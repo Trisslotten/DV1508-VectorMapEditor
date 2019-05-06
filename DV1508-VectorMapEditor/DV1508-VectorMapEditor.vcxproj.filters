@@ -16,15 +16,18 @@
     <Filter Include="Source Files\imgui">
       <UniqueIdentifier>{244707eb-5a81-4a12-9e74-e0ae7e44e11a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\graphics">
+      <UniqueIdentifier>{1d9a76f9-5696-4b50-8de7-f4b3554b33dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics\shaders">
+      <UniqueIdentifier>{4b381694-4363-418c-8c1d-27971257e4ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
@@ -45,12 +48,18 @@
     <ClCompile Include="input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vectormap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="window.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="shader.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="timer.hpp">
@@ -80,5 +89,22 @@
     <ClInclude Include="input.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="renderer.hpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.hpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vectormap.hpp">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="shaders\terrain.vert">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </None>
+    <None Include="shaders\terrain.frag">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
