@@ -13,6 +13,9 @@ int main(void)
 
 	ImGui_ImplOpenGL3_Init();
 
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.WindowRounding = 0.0f;
+
 	Timer frameTime;
 
 	char buf[256];
@@ -20,6 +23,8 @@ int main(void)
 
 	while (!Window::shouldClose())
 	{
+		glClear(GL_COLOR_BUFFER_BIT);
+
 		double dt = frameTime.elapsed();
 
 		io.DeltaTime = dt;
@@ -32,9 +37,6 @@ int main(void)
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui::NewFrame();
-
-
-
 		ImGui::Text("Hello, world %d", 123);
 		if (ImGui::Button("Save"))
 		{
@@ -42,9 +44,8 @@ int main(void)
 		}
 		ImGui::InputText("string", buf, IM_ARRAYSIZE(buf));
 		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-
-
 		ImGui::EndFrame();
+
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

@@ -141,7 +141,7 @@ void Window::open(int width, int height)
 	glfwSetWindowSizeCallback(window, resizeCallback);
 
 	// vsync 1, off 0
-	glfwSwapInterval(0);
+	glfwSwapInterval(1);
 
 	int major, minor, rev;
 	glfwGetVersion(&major, &minor, &rev);
