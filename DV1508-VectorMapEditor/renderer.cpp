@@ -18,14 +18,23 @@ void Renderer::render()
 
 	terrainShader.use();
 	terrainShader.uniform("camTransform", cam);
+	terrainShader.uniform("vectorMap", 1);
 
-	//glCullFace(GL_FRONT);
+	if (vectorMap)
+	{
+		vectorMap->bind(1);
+	}
 
 	glBindVertexArray(terrainVAO);
 	int x = terrainMeshRes - 1;
 	int numTris = 6*x*x;
 	glDrawElements(GL_TRIANGLES, numTris, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
+}
+
+void Renderer::setVectorMap(VectorMap * vmap)
+{
+	this->vectorMap = vmap;
 }
 
 void Renderer::initShaders()

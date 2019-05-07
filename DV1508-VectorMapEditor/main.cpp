@@ -23,6 +23,11 @@ int main(void)
 	Renderer renderer;
 	renderer.init();
 
+	VectorMap vmap;
+	vmap.init(); // vmap.init(128);
+	renderer.setVectorMap(&vmap);
+
+
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 
 	Timer frameTime;
