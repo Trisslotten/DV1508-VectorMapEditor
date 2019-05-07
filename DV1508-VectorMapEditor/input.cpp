@@ -16,7 +16,7 @@ namespace
 	static std::unordered_map<int, int> buttons;
 	static std::unordered_map<int, int> pre_buttons;
 
-	float axis_threshold = 0.2;
+	float axis_threshold = static_cast<float>(0.2);
 
 	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
