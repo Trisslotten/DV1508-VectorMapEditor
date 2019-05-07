@@ -5,6 +5,9 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "shader.hpp"
+#include "timer.hpp"
+
+#include "vectormap.hpp"
 
 class Renderer
 {
@@ -12,10 +15,13 @@ public:
 	void init();
 	void render();
 
+	void setVectorMap(VectorMap* vmap);
+
 private:
 	void initShaders();
 	void initMesh();
 
+	Timer timer;
 
 	ShaderProgram terrainShader;
 
@@ -25,4 +31,6 @@ private:
 	GLuint terrainVAO = 0;
 	std::vector<glm::vec2> terrainMesh;
 	std::vector<uint32_t> indices;
+
+	VectorMap* vectorMap = nullptr;
 };

@@ -2,12 +2,16 @@
 
 #include <vector>
 #include <glm/glm.hpp>
+#include "window.hpp"
 
 class VectorMap
 {
 public:
-	void init(int size = 128);
+	void init(int size = 512);
+	void bind(int slot);
 private:
+	GLuint texture;
+
 	int size = -1;
 	std::vector<glm::vec3> vectorMap;
 };
