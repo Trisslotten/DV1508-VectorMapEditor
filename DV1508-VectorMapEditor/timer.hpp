@@ -14,7 +14,7 @@ public:
 	double restart()
 	{
 		auto now = std::chrono::high_resolution_clock::now();
-		double diff = std::chrono::duration_cast<std::chrono::nanoseconds>(now - start).count();
+		double diff = (double)std::chrono::duration_cast<std::chrono::nanoseconds>(now - start).count();
 		start = std::chrono::high_resolution_clock::now();
 		paused = false;
 		return diff / 1000000000.0;
@@ -24,7 +24,7 @@ public:
 		auto now = std::chrono::high_resolution_clock::now();
 		if (paused)
 			now = pause_time;
-		double diff = std::chrono::duration_cast<std::chrono::nanoseconds>(now - start).count();
+		double diff = (double)std::chrono::duration_cast<std::chrono::nanoseconds>(now - start).count();
 		return diff / 1000000.0;
 	}
 

@@ -40,7 +40,7 @@ int main(void)
 
 		double dt = frameTime.elapsed();
 
-		io.DeltaTime = dt;
+		io.DeltaTime = (float)dt;
 		io.DisplaySize.x = Window::size().x;
 		io.DisplaySize.y = Window::size().y;
 		io.MousePos.x = Input::mousePosition().x;
