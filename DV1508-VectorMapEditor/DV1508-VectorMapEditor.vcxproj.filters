@@ -57,6 +57,9 @@
     <ClCompile Include="shader.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="window.hpp">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="shader.hpp">
       <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="engine.hpp">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
