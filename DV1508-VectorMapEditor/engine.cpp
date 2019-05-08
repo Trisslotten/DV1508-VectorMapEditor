@@ -74,8 +74,8 @@ void Engine::testWindow1()
 				// do stuff
 			}
 		}
-		ImGui::InputText("hej", buf, IM_ARRAYSIZE(buf));
-		ImGui::SliderFloat("san", &f, 0.0f, 1.0f);
+		//ImGui::InputText("hej", buf, IM_ARRAYSIZE(buf));
+		//ImGui::SliderFloat("san", &f, 0.0f, 1.0f);
 		ImGui::BulletText("asdlfkjasfoliasje.");
 	}
 	ImGui::End();
