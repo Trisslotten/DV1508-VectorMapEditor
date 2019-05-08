@@ -11,12 +11,25 @@ public:
 private:
 	void setImguiInput();
 
-	void testWindow1();
-	void testWindow2();
+	void showMenuBar();
+	void showToolsMenu();
+	void showOrientationMenu();
+	void showShadingMenu();
 
 	Renderer renderer;
 	VectorMap vmap;
 
-
 	Timer frameTime;
+
+	struct
+	{
+		// Hack, don't use
+		int active;
+	} toolsMenu;
+
+	struct
+	{
+		float size = 1.f;
+		float strength = 1.f;
+	} brushSettings;
 };

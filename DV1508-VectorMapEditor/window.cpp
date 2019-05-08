@@ -227,6 +227,11 @@ glm::vec2 Window::size()
 	return glm::vec2(width, height);
 }
 
+glm::vec2 Window::mouseScroll()
+{
+	return scroll;
+}
+
 void Window::setTitle(const std::string & _title)
 {
 	title = _title;

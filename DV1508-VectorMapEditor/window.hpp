@@ -26,6 +26,8 @@ namespace Window
 	glm::vec2 mousePosition();
 	glm::vec2 size();
 
+	glm::vec2 mouseScroll();
+
 	// set before open()
 	void setTitle(const std::string& title);
 };

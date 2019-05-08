@@ -14,7 +14,7 @@ void Renderer::render()
 {
 	glm::mat4 cam = glm::lookAt(glm::vec3(10), glm::vec3(0), glm::vec3(0, 1, 0));
 	auto ws = Window::size();
-	cam = glm::perspective(glm::radians(80.f), ws.x / ws.y, 0.1f, 100.f) * cam;
+	cam = glm::perspective(glm::radians(50.f), ws.x / ws.y, 0.1f, 100.f) * cam;
 
 	terrainShader.use();
 	terrainShader.uniform("camTransform", cam);
