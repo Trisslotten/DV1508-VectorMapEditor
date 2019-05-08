@@ -29,8 +29,6 @@ glm::vec3 noise3(glm::vec2 p)
 	return result;
 }
 
-
-
 void VectorMap::init(int size)
 {
 	this->size = size;
@@ -45,12 +43,12 @@ void VectorMap::init(int size)
 		glm::vec2 uv = glm::vec2(x, y) / float(size-1);
 
 		vectorMap[i] = glm::vec3(0);
-		float a = 1;
-		float f = 4;
+		float a = 2;
+		float f = 1;
 		for (int j = 0; j < 10; j++)
 		{
 			vectorMap[i] += a*noise3(f*uv);
-			a *= 0.3;
+			a *= 0.5;
 			f /= 0.5;
 		}
 		

@@ -28,6 +28,8 @@ int main(void)
 	renderer.setVectorMap(&vmap);
 
 
+
+
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 
 	Timer frameTime;
@@ -49,13 +51,36 @@ int main(void)
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui::NewFrame();
-		ImGui::Text("Hello, world %d", 123);
-		if (ImGui::Button("Save"))
+
+		if (ImGui::Begin("ImGui Demo"))
 		{
-			// do stuff
+			ImGui::Text("Hello, world %d", 123);
+
+			for (int i = 0; i < 9; i++)
+			{
+				if(i % 3 != 0)
+					ImGui::SameLine();
+				std::string buttonName = "TestButton" + std::to_string(i+1);
+				if (ImGui::Button(buttonName.c_str()))
+				{
+					// do stuff
+				}
+			}
+			ImGui::InputText("hej", buf, IM_ARRAYSIZE(buf));
+			ImGui::SliderFloat("san", &f, 0.0f, 1.0f);
+			ImGui::BulletText("asdlfkjasfoliasje.");
 		}
-		ImGui::InputText("string", buf, IM_ARRAYSIZE(buf));
-		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+		ImGui::End();
+
+		if (ImGui::Begin("bogdan window"))
+		{
+			ImGui::Text("asdasdas %d", 1337);
+			ImGui::BulletText("Double-click on title bar to collapse window.");
+		}
+		ImGui::End();
+
+
+
 		ImGui::EndFrame();
 
 

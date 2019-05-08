@@ -7,7 +7,7 @@
 class VectorMap
 {
 public:
-	void init(int size = 512);
+	void init(int size = 1024);
 	void bind(int slot);
 private:
 	GLuint texture;
