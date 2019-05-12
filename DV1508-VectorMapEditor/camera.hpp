@@ -5,9 +5,11 @@
 class Camera
 {
 	float mouseSensitivity = 0.008f;
+	float scrollSensitivity = 0.1f;
+
 
 	float fov = 60.f;
-	float camTargetDist = 22.f;
+	float camTargetDist = 12.f;
 
 	float yaw; // left right
 	float pitch; // up down
@@ -15,7 +17,6 @@ class Camera
 	glm::vec3 position;
 	glm::mat4 transform;
 public:
-
 	void update();
 
 	glm::mat4 getTransform();

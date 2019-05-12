@@ -8,7 +8,12 @@
 
 void Camera::update()
 {
-	glm::vec2 delta = Input::mouseMovement();
+	float scroll = Window::mouseScroll().y;
+	camTargetDist -= scrollSensitivity * scroll * camTargetDist;
+
+	glm::vec2 delta;
+	if(Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_3))
+		delta = Input::mouseMovement();
 		
 	pitch -= delta.y * mouseSensitivity;
 	yaw -= delta.x * mouseSensitivity;
