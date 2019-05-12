@@ -28,7 +28,7 @@ void Renderer::render()
 	glBindVertexArray(terrainVAO);
 	int x = terrainMeshRes - 1;
 	int numTris = 6*x*x;
-	glDrawElements(GL_TRIANGLES, numTris, GL_UNSIGNED_INT, 0);
+	glDrawElements((wireframe == false) ? GL_TRIANGLES : GL_LINES, numTris, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 
@@ -36,6 +36,12 @@ void Renderer::setVectorMap(VectorMap * vmap)
 {
 	this->vectorMap = vmap;
 }
+
+void Renderer::toggleWireFrame()
+{
+	wireframe = (wireframe == false) ? true : false;
+}
+
 
 void Renderer::initShaders()
 {
