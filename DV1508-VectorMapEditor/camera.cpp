@@ -17,6 +17,7 @@ void Camera::update()
 	glm::vec2 mouseMov = Input::mouseMovement();
 	if (Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_3))
 	{
+		Window::showCursor(false);
 		if (Input::isKeyDown(GLFW_KEY_LEFT_SHIFT))
 		{
 			glm::vec3 look = normalize(target - position);
@@ -25,12 +26,17 @@ void Camera::update()
 			glm::vec3 camUp = normalize(cross(look, side));
 
 			target += camTargetDist * panSpeed * ( side * mouseMov.x + camUp * mouseMov.y);
+			
 		}
 		else
 		{
 			pitch -= mouseMov.y * mouseSensitivity;
 			yaw -= mouseMov.x * mouseSensitivity;
 		}
+	}
+	else
+	{
+		Window::showCursor(true);
 	}
 	
 	pitch = glm::clamp(pitch, -glm::half_pi<float>() + 0.1f, glm::half_pi<float>() - 0.1f);
