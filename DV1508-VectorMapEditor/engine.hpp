@@ -10,7 +10,7 @@ public:
 	void render();
 private:
 	void setImguiInput();
-
+	bool wireframe = false;
 	void showMenuBar();
 	void showToolsMenu();
 	void showOrientationMenu();

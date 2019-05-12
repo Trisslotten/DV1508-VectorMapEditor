@@ -178,7 +178,10 @@ void Engine::showShadingMenu()
 		ImGui::Button("Shaded");
 		ImGui::Button("Textured");
 		ImGui::Button("Normals");
-		ImGui::Button("Wireframe");
+		if (ImGui::Button("Wireframe"))
+		{
+			renderer.toggleWireFrame();
+		}
 	}
 	ImGui::End();
 }

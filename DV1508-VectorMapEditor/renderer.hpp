@@ -16,15 +16,14 @@ public:
 	void render();
 
 	void setVectorMap(VectorMap* vmap);
-
+	void toggleWireFrame();
 private:
 	void initShaders();
 	void initMesh();
 
 	Timer timer;
-
+	bool wireframe = false;
 	ShaderProgram terrainShader;
-
 	int terrainMeshRes = 1024;
 	GLuint terrainEBO = 0;
 	GLuint terrainVBO = 0;
