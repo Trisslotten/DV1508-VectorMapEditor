@@ -6,7 +6,7 @@
 #include <vector>
 #include "shader.hpp"
 #include "timer.hpp"
-
+#include "camera.hpp"
 #include "vectormap.hpp"
 
 class Renderer
@@ -20,6 +20,8 @@ public:
 private:
 	void initShaders();
 	void initMesh();
+
+	Camera camera;
 
 	Timer timer;
 	bool wireframe = false;
