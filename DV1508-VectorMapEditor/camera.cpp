@@ -1,5 +1,6 @@
 #include "camera.hpp"
 
+#include <iostream>
 #include "window.hpp"
 #include "input.hpp"
 #include <glm/glm.hpp>
@@ -11,12 +12,27 @@ void Camera::update()
 	float scroll = Window::mouseScroll().y;
 	camTargetDist -= scrollSensitivity * scroll * camTargetDist;
 
-	glm::vec2 delta;
-	if(Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_3))
-		delta = Input::mouseMovement();
-		
-	pitch -= delta.y * mouseSensitivity;
-	yaw -= delta.x * mouseSensitivity;
+	const glm::vec3 up{ 0,1,0 };
+
+	glm::vec2 mouseMov = Input::mouseMovement();
+	if (Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_3))
+	{
+		if (Input::isKeyDown(GLFW_KEY_LEFT_SHIFT))
+		{
+			glm::vec3 look = normalize(target - position);
+
+			glm::vec3 side = normalize(cross(up, look));
+			glm::vec3 camUp = normalize(cross(look, side));
+
+			target += camTargetDist * panSpeed * ( side * mouseMov.x + camUp * mouseMov.y);
+		}
+		else
+		{
+			pitch -= mouseMov.y * mouseSensitivity;
+			yaw -= mouseMov.x * mouseSensitivity;
+		}
+	}
+	
 	pitch = glm::clamp(pitch, -glm::half_pi<float>() + 0.1f, glm::half_pi<float>() - 0.1f);
 	//yaw = glm::mod(yaw, glm::two_pi<float>());
 
@@ -24,11 +40,12 @@ void Camera::update()
 	glm::mat4 yaw_transform = glm::rotate(glm::mat4(), yaw, glm::vec3(0, 1, 0));
 
 	position = yaw_transform*pitch_transform*glm::vec4(camTargetDist*glm::vec3(-1, 0, 0), 1);
+	position += target;
 
 	transform = glm::lookAt(
 		position,
 		target,
-		glm::vec3(0, 1, 0)
+		up
 	);
 
 	auto ws = Window::size();

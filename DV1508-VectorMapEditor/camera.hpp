@@ -6,7 +6,7 @@ class Camera
 {
 	float mouseSensitivity = 0.008f;
 	float scrollSensitivity = 0.1f;
-
+	float panSpeed = 0.0011111f;
 
 	float fov = 60.f;
 	float camTargetDist = 12.f;
