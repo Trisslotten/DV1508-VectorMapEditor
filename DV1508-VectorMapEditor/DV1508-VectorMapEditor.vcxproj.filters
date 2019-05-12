@@ -60,6 +60,9 @@
     <ClCompile Include="engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="window.hpp">
@@ -99,6 +102,9 @@
       <Filter>Source Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="engine.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
