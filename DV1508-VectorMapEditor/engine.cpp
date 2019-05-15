@@ -18,6 +18,9 @@ void Engine::init()
 	vmap.init(); // vmap.init(128);
 	renderer.setVectorMap(&vmap);
 
+
+	testIcon.loadTexture("assets/icon_tool_up.png");
+
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 }
 
@@ -110,19 +113,23 @@ void Engine::showToolsMenu()
 
 	if (ImGui::Begin("Tools", 0, window_flags))
 	{
-		for (int i = 0; i < 3*2; i++)
+		for (int i = 0; i < 4*2; i++)
 		{
-			if (i % 3 != 0)
+			if (i % 4 != 0)
 				ImGui::SameLine();
 
 			std::string name = "Tool";
 			if (i+1 < 10)
 				name += "0";
 			name += std::to_string(i + 1);
-			if (ImGui::Button(name.c_str())) 
+
+			ImTextureID tex = reinterpret_cast<ImTextureID>(testIcon.getID());
+			ImGui::PushID(name.c_str());
+			if (ImGui::ImageButton(tex, ImVec2(32, 32)))
 			{
 				toolsMenu.active = i;
 			}
+			ImGui::PopID();
 		}
 
 		ImGui::Separator();

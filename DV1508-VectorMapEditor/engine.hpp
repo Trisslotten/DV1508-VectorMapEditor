@@ -1,6 +1,7 @@
 #pragma once
 
 #include "renderer.hpp"
+#include "texture.hpp"
 
 class Engine
 {
@@ -20,6 +21,8 @@ private:
 	VectorMap vmap;
 
 	Timer frameTime;
+
+	Texture testIcon;
 
 	struct
 	{

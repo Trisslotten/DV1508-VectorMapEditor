@@ -13,6 +13,7 @@ void main()
 	vec3 normal = normalize(cross(dx, dy));
 
 	vec3 matColor = vec3(44, 176, 55)/256;
+	matColor = vec3(0.7);
 
 	const vec3 lightDir = normalize(vec3(1));
 	vec3 look = normalize(camPos - vPos);
@@ -25,7 +26,7 @@ void main()
 	vec3 lighting = vec3(0);
 	lighting += vec3(0.2);
 	lighting += diffuse * vec3(0.8);
-	lighting += specular * vec3(1.0);
+	//lighting += specular * vec3(1.0);
 	lighting *= matColor;
 
 	vec3 color = lighting;
