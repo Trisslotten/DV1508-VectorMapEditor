@@ -10,7 +10,7 @@
 void Camera::update()
 {
 	float scroll = Window::mouseScroll().y;
-	camTargetDist -= scrollSensitivity * scroll * camTargetDist;
+	float camTDistChange = -scrollSensitivity * scroll * camTargetDist;
 
 	const glm::vec3 up{ 0,1,0 };
 
@@ -22,11 +22,17 @@ void Camera::update()
 		{
 			glm::vec3 look = normalize(target - position);
 
+			/*
 			glm::vec3 side = normalize(cross(up, look));
 			glm::vec3 camUp = normalize(cross(look, side));
 
 			target += camTargetDist * panSpeed * ( side * mouseMov.x + camUp * mouseMov.y);
-			
+			*/
+
+			look.y = 0;
+			glm::vec3 forward = normalize(look);
+			glm::vec3 side = normalize(cross(up, forward));
+			target += camTargetDist * panSpeed * (side * mouseMov.x + forward * mouseMov.y);
 		}
 		else
 		{
@@ -38,6 +44,15 @@ void Camera::update()
 	{
 		Window::showCursor(true);
 	}
+
+	if (Input::isKeyDown(GLFW_KEY_LEFT_SHIFT))
+	{
+		target.y -= 0.5f*camTDistChange;
+		camTDistChange = 0.f;
+	}
+
+
+	camTargetDist += camTDistChange;
 	
 	pitch = glm::clamp(pitch, -glm::half_pi<float>() + 0.1f, glm::half_pi<float>() - 0.1f);
 	//yaw = glm::mod(yaw, glm::two_pi<float>());
