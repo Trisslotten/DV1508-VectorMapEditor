@@ -36,7 +36,6 @@ void Renderer::render()
 
 void Renderer::renderMiniMap()
 {
-	camera.update();
 
 	glm::mat4 cam = camera.getTransform();
 
