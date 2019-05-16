@@ -36,7 +36,7 @@ void Engine::update()
 	showToolsMenu();
 	showOrientationMenu();
 	showShadingMenu();
-
+	showMiniMap();
 	//ImGui::ShowDemoWindow();
 
 	ImGui::EndFrame();
@@ -46,12 +46,14 @@ void Engine::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	minimap.bindFBO();
+	renderer.renderMiniMap();
+	minimap.unbindFBO();
 	renderer.render();
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
-
 void Engine::setImguiInput()
 {
 	double dt = frameTime.restart();
@@ -103,7 +105,20 @@ void Engine::showMenuBar()
 		ImGui::EndMainMenuBar();
 	}
 }
+void Engine::showMiniMap()
+{
+	ImGuiWindowFlags window_flags = 0;
+	window_flags |= ImGuiWindowFlags_NoResize;
+	window_flags |= ImGuiWindowFlags_NoCollapse;
+	window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 
+	ImTextureID tex = reinterpret_cast<ImTextureID>(minimap.getTextureID());
+	if (ImGui::Begin("Minimap", 0, window_flags))
+	{
+		ImGui::Image(tex, ImVec2(300, 300));
+	}
+	ImGui::End();
+}
 void Engine::showToolsMenu()
 {
 	ImGuiWindowFlags window_flags = 0;
@@ -158,6 +173,7 @@ void Engine::showOrientationMenu()
 	window_flags |= ImGuiWindowFlags_NoResize;
 	window_flags |= ImGuiWindowFlags_NoCollapse;
 	window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
+	window_flags |= ImGuiWindowFlags_NoMove;
 	if (ImGui::Begin("Orientation", 0, window_flags))
 	{
 		ImGui::Text("   @ . . . . @   ");

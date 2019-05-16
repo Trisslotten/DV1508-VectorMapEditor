@@ -1,6 +1,6 @@
 #version 440 core
 
-out vec4 outColor;
+layout(location = 0) out vec4 outColor;
 
 in vec3 vPos;
 

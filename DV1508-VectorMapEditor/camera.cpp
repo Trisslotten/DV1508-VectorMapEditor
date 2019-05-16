@@ -15,7 +15,7 @@ void Camera::update()
 	const glm::vec3 up{ 0,1,0 };
 
 	glm::vec2 mouseMov = Input::mouseMovement();
-	if (Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_3))
+	if (Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_2))
 	{
 		Window::showCursor(false);
 		if (Input::isKeyDown(GLFW_KEY_LEFT_SHIFT))

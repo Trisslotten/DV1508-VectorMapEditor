@@ -8,21 +8,19 @@
 #include "timer.hpp"
 #include "camera.hpp"
 #include "vectormap.hpp"
-
+#include "minimap.hpp"
 class Renderer
 {
 public:
 	void init();
 	void render();
-
+	void renderMiniMap();
 	void setVectorMap(VectorMap* vmap);
 	void toggleWireFrame();
 private:
 	void initShaders();
 	void initMesh();
-
 	Camera camera;
-
 	Timer timer;
 	bool wireframe = false;
 	ShaderProgram terrainShader;

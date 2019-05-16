@@ -34,6 +34,29 @@ void Renderer::render()
 	glBindVertexArray(0);
 }
 
+void Renderer::renderMiniMap()
+{
+	camera.update();
+
+	glm::mat4 cam = camera.getTransform();
+
+	terrainShader.use();
+	terrainShader.uniform("camTransform", cam);
+	terrainShader.uniform("camPos", camera.getPosition());
+	terrainShader.uniform("vectorMap", 1);
+
+	if (vectorMap)
+	{
+		vectorMap->bind(1);
+	}
+
+	glBindVertexArray(terrainVAO);
+	int x = terrainMeshRes - 1;
+	int numTris = 6 * x*x;
+	glDrawElements(GL_TRIANGLES, numTris, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+}
+
 void Renderer::setVectorMap(VectorMap * vmap)
 {
 	this->vectorMap = vmap;

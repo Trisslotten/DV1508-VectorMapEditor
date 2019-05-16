@@ -110,6 +110,7 @@
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="input.hpp" />
     <ClInclude Include="lodepng.h" />
+    <ClInclude Include="minimap.hpp" />
     <ClInclude Include="renderer.hpp" />
     <ClInclude Include="shader.hpp" />
     <ClInclude Include="texture.hpp" />
