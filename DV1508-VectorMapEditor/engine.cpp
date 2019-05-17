@@ -21,7 +21,8 @@ void Engine::init()
 
 	testIcon.loadTexture("assets/icon_tool_up.png");
 
-	glClearColor(0.5, 0.5, 0.5, 1.0);
+	glm::vec3 clearColor{ 0.7f };
+	glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0);
 }
 
 void Engine::update()

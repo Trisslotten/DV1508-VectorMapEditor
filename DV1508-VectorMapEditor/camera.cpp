@@ -63,19 +63,25 @@ void Camera::update()
 	position = yaw_transform*pitch_transform*glm::vec4(camTargetDist*glm::vec3(-1, 0, 0), 1);
 	position += target;
 
-	transform = glm::lookAt(
+	view = glm::lookAt(
 		position,
 		target,
 		up
 	);
 
 	auto ws = Window::size();
-	transform = glm::perspective(glm::radians(fov), ws.x / ws.y, 0.1f, 100.f) * transform;
+	perspective = glm::perspective(glm::radians(fov), ws.x / ws.y, 0.1f, 100.f);
+	transform = perspective * view;
 }
 
 glm::mat4 Camera::getTransform()
 {
 	return transform;
+}
+
+glm::mat4 Camera::getInverse()
+{
+	return glm::inverse(view)*glm::inverse(perspective);
 }
 
 glm::vec3 Camera::getPosition()

@@ -4,6 +4,7 @@
 #include "window.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+#include "imgui/imgui.h"
 
 void Renderer::init()
 {
@@ -17,8 +18,35 @@ void Renderer::render()
 
 	glm::mat4 cam = camera.getTransform();
 
+	// mouse picking
+	glm::vec2 uv{-100};
+	if (!ImGui::GetIO().WantCaptureMouse)
+	{
+		glm::mat4 invCam = camera.getInverse();
+		glm::vec2 mousePos = Input::mousePosition();
+		glm::vec2 ndcMousePos = 2.f * mousePos / Window::size() - 1.f;
+		ndcMousePos.y *= -1.f;
+		glm::vec4 near = invCam * glm::vec4(ndcMousePos, 0, 1);
+		glm::vec4 far = invCam * glm::vec4(ndcMousePos, 1, 1);
+		
+		near /= near.w;
+		far /= far.w;
+
+
+		glm::vec3 origin = near;
+		glm::vec3 dir = far - near;
+
+		// 
+		float t = -origin.y / dir.y;
+		glm::vec3 intersection = t * dir + origin;
+
+
+		uv = (glm::vec2(intersection.x, intersection.z) + 1.f)/2.f;
+	}
+
 	terrainShader.use();
 	terrainShader.uniform("camTransform", cam);
+	terrainShader.uniform("mouseUV", uv);
 	terrainShader.uniform("camPos", camera.getPosition());
 	terrainShader.uniform("vectorMap", 1);
 

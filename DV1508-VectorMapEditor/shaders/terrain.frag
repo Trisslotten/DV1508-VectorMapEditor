@@ -3,8 +3,10 @@
 layout(location = 0) out vec4 outColor;
 
 in vec3 vPos;
+in vec2 vUV;
 
 uniform vec3 camPos;
+uniform vec2 mouseUV;
 
 void main()
 {
@@ -30,6 +32,9 @@ void main()
 	lighting *= matColor;
 
 	vec3 color = lighting;
+
+	color = mix(color, vec3(1), smoothstep(0.1, 0.0, length(vUV - mouseUV)));
+
 
 	outColor = vec4(color,1);
 }
