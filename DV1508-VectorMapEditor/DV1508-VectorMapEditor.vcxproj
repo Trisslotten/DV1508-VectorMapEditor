@@ -118,6 +118,7 @@
     <ClInclude Include="window.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\addheight.comp" />
     <None Include="shaders\terrain.frag" />
     <None Include="shaders\terrain.vert" />
     <None Include="vectormap.hpp" />

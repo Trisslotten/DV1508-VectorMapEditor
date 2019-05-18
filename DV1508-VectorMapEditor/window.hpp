@@ -22,6 +22,8 @@ namespace Window
 
 	void showCursor(bool val);
 
+	bool cursorIsEnabled();
+
 	glm::vec2 mouseMovement();
 	glm::vec2 mousePosition();
 	glm::vec2 size();

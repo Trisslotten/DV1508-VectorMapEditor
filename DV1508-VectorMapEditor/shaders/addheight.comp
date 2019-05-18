@@ -1,0 +1,27 @@
+#version 440 core
+
+layout(local_size_x = 16, local_size_y = 16) in;
+
+layout(binding = 1, rgba32f) uniform image2D img;
+
+uniform vec2 brushUV;
+uniform float radius;
+uniform float strength;
+uniform vec2 imgSize;
+
+void main()
+{
+	ivec2 i = ivec2(gl_GlobalInvocationID.xy);
+
+	vec2 uv = vec2(i) / imgSize + brushUV - radius;
+
+	ivec2 pixel = ivec2(uv * imgSize);
+
+	vec4 disp = imageLoad(img, pixel);
+
+	float distance = length(uv - brushUV);
+
+	disp.y += strength * smoothstep(radius, 0, distance);
+
+	imageStore(img, pixel, disp);
+}

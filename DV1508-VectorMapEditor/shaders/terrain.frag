@@ -6,7 +6,18 @@ in vec3 vPos;
 in vec2 vUV;
 
 uniform vec3 camPos;
-uniform vec2 mouseUV;
+uniform vec2 brushUV;
+uniform float brushRadius;
+
+void brush(inout vec3 color)
+{
+	
+	float radius = brushRadius;
+	float thickness = 0.005;
+	float len = length(vUV - brushUV);
+	float t = smoothstep(radius, radius - thickness, len)*smoothstep(radius - thickness, radius, len);
+	color = mix(color, vec3(3,0,0), t);
+}
 
 void main()
 {
@@ -33,8 +44,7 @@ void main()
 
 	vec3 color = lighting;
 
-	color = mix(color, vec3(1), smoothstep(0.1, 0.0, length(vUV - mouseUV)));
-
+	brush(color);
 
 	outColor = vec4(color,1);
 }

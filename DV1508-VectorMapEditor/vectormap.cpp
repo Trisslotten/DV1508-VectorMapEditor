@@ -1,4 +1,5 @@
 #include "vectormap.hpp"
+#include <iostream>
 
 // iq's integer hash https://www.shadertoy.com/view/llGSzw
 float uhash12(glm::uvec2 x)
@@ -42,7 +43,7 @@ void VectorMap::init(int size)
 
 		glm::vec2 uv = glm::vec2(x, y) / float(size-1);
 
-		vectorMap[i] = glm::vec3(0);
+		vectorMap[i] = glm::vec4(0);
 		/*
 		float a = 2;
 		float f = 1;
@@ -61,12 +62,35 @@ void VectorMap::init(int size)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, size, size, 0, GL_RGB, GL_FLOAT, vectorMap.data());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, size, size, 0, GL_RGBA, GL_FLOAT, vectorMap.data());
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+
+	addHeightShader.add("addheight.comp");
+	addHeightShader.compile();
+
+
 }
 
 void VectorMap::bind(int slot)
 {
 	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_2D, texture);
+}
+
+void VectorMap::addHeight(glm::vec2 uv, float radius, float strength)
+{
+	addHeightShader.use();
+
+	addHeightShader.uniform("brushUV", uv);
+	addHeightShader.uniform("radius", radius);
+	addHeightShader.uniform("strength", strength);
+	addHeightShader.uniform("imgSize", glm::vec2(this->size));
+
+	glBindImageTexture(1, texture, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+
+	float size = glm::ceil(2.f * radius * this->size) ;
+	int groupSize = 16;
+	int numGroups = glm::ceil(size / groupSize);
+	glDispatchCompute(numGroups, numGroups, 1);
 }

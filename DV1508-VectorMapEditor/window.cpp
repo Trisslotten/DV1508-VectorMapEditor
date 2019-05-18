@@ -163,6 +163,11 @@ void Window::showCursor(bool val)
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
+bool Window::cursorIsEnabled()
+{
+	return glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL;
+}
+
 void Window::close()
 {
 	glfwTerminate();

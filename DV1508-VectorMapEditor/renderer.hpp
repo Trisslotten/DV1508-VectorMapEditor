@@ -17,6 +17,8 @@ public:
 	void renderMiniMap();
 	void setVectorMap(VectorMap* vmap);
 	void toggleWireFrame();
+
+	void showBrush(glm::vec2 uv, float radius);
 private:
 	void initShaders();
 	void initMesh();
@@ -30,6 +32,9 @@ private:
 	GLuint terrainVAO = 0;
 	std::vector<glm::vec2> terrainMesh;
 	std::vector<uint32_t> indices;
+
+	glm::vec2 brushUV;
+	float brushRadius = 0.f;
 
 	VectorMap* vectorMap = nullptr;
 };

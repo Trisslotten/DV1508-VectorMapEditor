@@ -133,5 +133,8 @@
     <None Include="shaders\terrain.frag">
       <Filter>Source Files\graphics\shaders</Filter>
     </None>
+    <None Include="shaders\addheight.comp">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -18,9 +18,9 @@ void Renderer::render()
 
 	glm::mat4 cam = camera.getTransform();
 
+
 	// mouse picking
-	glm::vec2 uv{-100};
-	if (!ImGui::GetIO().WantCaptureMouse)
+	if (!ImGui::GetIO().WantCaptureMouse && Window::cursorIsEnabled())
 	{
 		glm::mat4 invCam = camera.getInverse();
 		glm::vec2 mousePos = Input::mousePosition();
@@ -28,7 +28,7 @@ void Renderer::render()
 		ndcMousePos.y *= -1.f;
 		glm::vec4 near = invCam * glm::vec4(ndcMousePos, 0, 1);
 		glm::vec4 far = invCam * glm::vec4(ndcMousePos, 1, 1);
-		
+
 		near /= near.w;
 		far /= far.w;
 
@@ -40,15 +40,22 @@ void Renderer::render()
 		float t = -origin.y / dir.y;
 		glm::vec3 intersection = t * dir + origin;
 
-
-		uv = (glm::vec2(intersection.x, intersection.z) + 1.f)/2.f;
+		brushRadius = 0.1;
+		brushUV = (glm::vec2(intersection.x, intersection.z) + 1.f) / 2.f;
 	}
+
+	if (vectorMap && !ImGui::GetIO().WantCaptureMouse && Window::cursorIsEnabled() && Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_1))
+	{
+		vectorMap->addHeight(brushUV, brushRadius, 0.0025f);
+	}
+
 
 	terrainShader.use();
 	terrainShader.uniform("camTransform", cam);
-	terrainShader.uniform("mouseUV", uv);
+	terrainShader.uniform("brushUV", brushUV);
 	terrainShader.uniform("camPos", camera.getPosition());
 	terrainShader.uniform("vectorMap", 1);
+	terrainShader.uniform("brushRadius", brushRadius);
 
 	if (vectorMap)
 	{
@@ -60,6 +67,8 @@ void Renderer::render()
 	int numTris = 6*x*x;
 	glDrawElements((wireframe == false) ? GL_TRIANGLES : GL_LINES, numTris, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
+
+	brushRadius = 0;
 }
 
 void Renderer::renderMiniMap()
@@ -69,6 +78,7 @@ void Renderer::renderMiniMap()
 
 	terrainShader.use();
 	terrainShader.uniform("camTransform", cam);
+	terrainShader.uniform("mouseUV", glm::vec2(-100));
 	terrainShader.uniform("camPos", camera.getPosition());
 	terrainShader.uniform("vectorMap", 1);
 
@@ -94,6 +104,12 @@ void Renderer::toggleWireFrame()
 	wireframe = (wireframe == false) ? true : false;
 }
 
+void Renderer::showBrush(glm::vec2 uv, float radius)
+{
+	brushRadius = radius;
+	brushUV = uv;
+}
+
 
 void Renderer::initShaders()
 {
@@ -109,7 +125,7 @@ void Renderer::initMesh()
 	{
 		for (int x = 0; x < terrainMeshRes; x++)
 		{
-			// meshRes-1 so some vertices can have uv 1.0
+			// terrainMeshRes-1 so vertices can have uv 1.0
 			glm::vec2 uv = glm::vec2(x, y) / (terrainMeshRes - 1.f);
 			terrainMesh.push_back(uv);
 		}
