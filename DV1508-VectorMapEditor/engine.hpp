@@ -3,6 +3,7 @@
 #include "renderer.hpp"
 #include "texture.hpp"
 #include "minimap.hpp"
+
 class Engine
 {
 public:
@@ -18,6 +19,7 @@ private:
 	void showOrientationMenu();
 	void showShadingMenu();
 	void showMiniMap();
+	void showGraphEditor();
 	Renderer renderer;
 	VectorMap vmap;
 
