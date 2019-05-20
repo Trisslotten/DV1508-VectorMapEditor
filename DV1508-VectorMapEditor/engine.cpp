@@ -27,22 +27,38 @@ void Engine::init()
 
 void Engine::update()
 {
+	dt = frameTime.restart();
+
 	setImguiInput();
 
 	ImGui_ImplOpenGL3_NewFrame();
 
 	ImGui::NewFrame();
-
-	showMenuBar();
-	showToolsMenu();
-	showOrientationMenu();
-	showShadingMenu();
-	showMiniMap();
-	//ImGui::ShowDemoWindow();
-
+	{
+		showMenuBar();
+		showToolsMenu();
+		showOrientationMenu();
+		showShadingMenu();
+		showMiniMap();
+		//ImGui::ShowDemoWindow();
+	}
 	ImGui::EndFrame();
 
 	
+	if (canUseTool())
+	{
+		glm::vec2 mouseUV = renderer.mouseTerrainIntersection();
+		
+		float radius = brushSettings.radius * 0.02f;
+		float strength = brushSettings.radius * 0.05f * dt;
+		
+		renderer.showBrush(mouseUV, radius);
+
+		if (Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_1))
+		{
+			vmap.addHeight(mouseUV, radius, strength);
+		}
+	}
 }
 
 void Engine::render()
@@ -59,8 +75,6 @@ void Engine::render()
 }
 void Engine::setImguiInput()
 {
-	double dt = frameTime.restart();
-
 	ImGuiIO& io = ImGui::GetIO();
 	io.DeltaTime = (float)dt;
 	io.DisplaySize.x = Window::size().x;
@@ -122,6 +136,10 @@ void Engine::showMiniMap()
 	}
 	ImGui::End();
 }
+bool Engine::canUseTool()
+{
+	return !ImGui::GetIO().WantCaptureMouse && Window::cursorIsEnabled();
+}
 void Engine::showToolsMenu()
 {
 	ImGuiWindowFlags window_flags = 0;
@@ -153,8 +171,9 @@ void Engine::showToolsMenu()
 		ImGui::Separator();
 		//ImGui::Text("Brush Settings");
 		ImGui::PushItemWidth(100);
-		ImGui::SliderFloat("Size", &brushSettings.size, 1, 10);
-		ImGui::SliderFloat("Strength", &brushSettings.strength, 1, 10);
+
+		ImGui::SliderFloat("Size", &brushSettings.radius, 1, 10, "%.f");
+		ImGui::SliderFloat("Strength", &brushSettings.strength, 1, 10, "%.f");
 
 		if (toolsMenu.active % 2 != 0)
 		{
@@ -164,7 +183,7 @@ void Engine::showToolsMenu()
 			ImGui::Button("Button1");
 			ImGui::SameLine();
 			ImGui::Button("Button2");
-			ImGui::SliderFloat("Size2", &brushSettings.size, 1, 10);
+			//ImGui::SliderFloat("Size2", &brushSettings.radius, 1, 10);
 		}
 	}
 	ImGui::End();

@@ -18,10 +18,14 @@ private:
 	void showOrientationMenu();
 	void showShadingMenu();
 	void showMiniMap();
+
+	bool canUseTool();
+
 	Renderer renderer;
 	VectorMap vmap;
 
 	Timer frameTime;
+	double dt;
 
 	Texture testIcon;
 
@@ -33,7 +37,7 @@ private:
 
 	struct
 	{
-		float size = 1.f;
+		float radius = 1.f;
 		float strength = 1.f;
 	} brushSettings;
 };

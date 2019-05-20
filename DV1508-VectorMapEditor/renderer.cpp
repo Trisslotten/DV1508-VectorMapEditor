@@ -18,38 +18,6 @@ void Renderer::render()
 
 	glm::mat4 cam = camera.getTransform();
 
-
-	// mouse picking
-	if (!ImGui::GetIO().WantCaptureMouse && Window::cursorIsEnabled())
-	{
-		glm::mat4 invCam = camera.getInverse();
-		glm::vec2 mousePos = Input::mousePosition();
-		glm::vec2 ndcMousePos = 2.f * mousePos / Window::size() - 1.f;
-		ndcMousePos.y *= -1.f;
-		glm::vec4 near = invCam * glm::vec4(ndcMousePos, 0, 1);
-		glm::vec4 far = invCam * glm::vec4(ndcMousePos, 1, 1);
-
-		near /= near.w;
-		far /= far.w;
-
-
-		glm::vec3 origin = near;
-		glm::vec3 dir = far - near;
-
-		// 
-		float t = -origin.y / dir.y;
-		glm::vec3 intersection = t * dir + origin;
-
-		brushRadius = 0.1;
-		brushUV = (glm::vec2(intersection.x, intersection.z) + 1.f) / 2.f;
-	}
-
-	if (vectorMap && !ImGui::GetIO().WantCaptureMouse && Window::cursorIsEnabled() && Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_1))
-	{
-		vectorMap->addHeight(brushUV, brushRadius, 0.0025f);
-	}
-
-
 	terrainShader.use();
 	terrainShader.uniform("camTransform", cam);
 	terrainShader.uniform("brushUV", brushUV);
@@ -108,6 +76,28 @@ void Renderer::showBrush(glm::vec2 uv, float radius)
 {
 	brushRadius = radius;
 	brushUV = uv;
+}
+
+glm::vec2 Renderer::mouseTerrainIntersection()
+{
+	glm::mat4 invCam = camera.getInverse();
+	glm::vec2 mousePos = Input::mousePosition();
+	glm::vec2 ndcMousePos = 2.f * mousePos / Window::size() - 1.f;
+	ndcMousePos.y *= -1.f;
+	glm::vec4 near = invCam * glm::vec4(ndcMousePos, 0, 1);
+	glm::vec4 far = invCam * glm::vec4(ndcMousePos, 1, 1);
+
+	near /= near.w;
+	far /= far.w;
+
+	glm::vec3 origin = near;
+	glm::vec3 dir = far - near;
+
+	float t = -origin.y / dir.y;
+	glm::vec3 intersection = t * dir + origin;
+
+	glm::vec2 result = (glm::vec2(intersection.x, intersection.z) + 1.f) / 2.f;
+	return result;
 }
 
 

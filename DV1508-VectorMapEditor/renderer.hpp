@@ -19,6 +19,7 @@ public:
 	void toggleWireFrame();
 
 	void showBrush(glm::vec2 uv, float radius);
+	glm::vec2 mouseTerrainIntersection();
 private:
 	void initShaders();
 	void initMesh();
