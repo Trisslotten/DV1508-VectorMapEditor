@@ -122,6 +122,9 @@
     <ClInclude Include="minimap.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Bezier.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vectormap.hpp">

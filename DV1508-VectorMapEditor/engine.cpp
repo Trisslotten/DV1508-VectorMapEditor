@@ -5,6 +5,8 @@
 
 #include "input.hpp"
 
+#include "Bezier.hpp"
+
 void Engine::init()
 {
 	ImGui::CreateContext();
@@ -34,14 +36,15 @@ void Engine::update()
 	ImGui_ImplOpenGL3_NewFrame();
 
 	ImGui::NewFrame();
-	{
-		showMenuBar();
-		showToolsMenu();
-		showOrientationMenu();
-		showShadingMenu();
-		showMiniMap();
-		//ImGui::ShowDemoWindow();
-	}
+
+	showMenuBar();
+	showToolsMenu();
+	showOrientationMenu();
+	showShadingMenu();
+	showMiniMap();
+	showGraphEditor();
+	//ImGui::ShowDemoWindow();
+
 	ImGui::EndFrame();
 
 	
@@ -122,6 +125,18 @@ void Engine::showMenuBar()
 		ImGui::EndMainMenuBar();
 	}
 }
+
+void Engine::showGraphEditor() {
+	ImGuiWindowFlags window_flags = 0;
+	window_flags |= ImGuiWindowFlags_NoResize;
+	window_flags |= ImGuiWindowFlags_NoCollapse;
+	window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
+	if (ImGui::Begin("Graph editor", 0, window_flags)) {
+		float arr[] = { 0.f, 0.f, 0.1f, 1.f };
+		Bezier::bezier("Pingas", arr);
+	} ImGui::End();
+}
+
 void Engine::showMiniMap()
 {
 	ImGuiWindowFlags window_flags = 0;
