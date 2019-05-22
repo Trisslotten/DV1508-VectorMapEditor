@@ -11,6 +11,9 @@ public:
 	void update();
 	void render();
 private:
+	bool displayOrientationMenu = true;
+	bool displayCameraSettings = false;
+	bool displayMinimap = true;
 	Minimap minimap;
 	void setImguiInput();
 	bool wireframe = false;
@@ -19,6 +22,7 @@ private:
 	void showOrientationMenu();
 	void showShadingMenu();
 	void showMiniMap();
+	void showCameraSettings();
 
 	bool canUseTool();
 

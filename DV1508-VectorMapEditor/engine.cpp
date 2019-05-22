@@ -43,6 +43,7 @@ void Engine::update()
 	showShadingMenu();
 	showMiniMap();
 	showGraphEditor();
+	showCameraSettings();
 	//ImGui::ShowDemoWindow();
 
 	ImGui::EndFrame();
@@ -122,6 +123,22 @@ void Engine::showMenuBar()
 			if (ImGui::MenuItem("Shading", "")) {}
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("Camera"))
+		{
+			if(ImGui::MenuItem("Show Settings", "", displayCameraSettings))
+			{
+				displayCameraSettings = (displayCameraSettings == false) ? true : false;
+			}
+			if (ImGui::MenuItem("Show Orientation Menu", "", displayOrientationMenu))
+			{
+				displayOrientationMenu = (displayOrientationMenu == false) ? true : false;
+			}
+			if (ImGui::MenuItem("Show Minimap", "", displayMinimap))
+			{
+				displayMinimap = (displayMinimap == false) ? true : false;
+			}
+			ImGui::EndMenu();
+		}
 		ImGui::EndMainMenuBar();
 	}
 }
@@ -139,17 +156,37 @@ void Engine::showGraphEditor() {
 
 void Engine::showMiniMap()
 {
-	ImGuiWindowFlags window_flags = 0;
-	window_flags |= ImGuiWindowFlags_NoResize;
-	window_flags |= ImGuiWindowFlags_NoCollapse;
-	window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
-
-	ImTextureID tex = reinterpret_cast<ImTextureID>(minimap.getTextureID());
-	if (ImGui::Begin("Minimap", 0, window_flags))
+	if (displayMinimap)
 	{
-		ImGui::Image(tex, ImVec2(300, 300));
+		ImGuiWindowFlags window_flags = 0;
+		window_flags |= ImGuiWindowFlags_NoResize;
+		window_flags |= ImGuiWindowFlags_NoCollapse;
+		window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
+
+		ImTextureID tex = reinterpret_cast<ImTextureID>(minimap.getTextureID());
+		if (ImGui::Begin("Minimap", 0, window_flags))
+		{
+			ImGui::Image(tex, ImVec2(300, 300));
+		}
+		ImGui::End();
 	}
-	ImGui::End();
+}
+void Engine::showCameraSettings()
+{
+	if (displayCameraSettings)
+	{
+		ImGuiWindowFlags window_flags = 0;
+		window_flags |= ImGuiWindowFlags_NoResize;
+		window_flags |= ImGuiWindowFlags_NoCollapse;
+		window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
+		window_flags |= ImGuiWindowFlags_NoMove;
+		if (ImGui::Begin("Camera Settings", 0, window_flags))
+		{
+			ImGui::Button("Set FPS camera");
+			ImGui::Button("Set 3D Camera");
+		}
+		ImGui::End();
+	}
 }
 bool Engine::canUseTool()
 {
@@ -206,25 +243,27 @@ void Engine::showToolsMenu()
 
 void Engine::showOrientationMenu()
 {
-	ImGuiWindowFlags window_flags = 0;
-	window_flags |= ImGuiWindowFlags_NoResize;
-	window_flags |= ImGuiWindowFlags_NoCollapse;
-	window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
-	window_flags |= ImGuiWindowFlags_NoMove;
-	if (ImGui::Begin("Orientation", 0, window_flags))
+	if (displayOrientationMenu)
 	{
-		ImGui::Text("   @ . . . . @   ");
-		ImGui::Text("   .\\        .\\   ");
-		ImGui::Text("   . \\       . \\   ");
-		ImGui::Text("   .  @ . . ... @   ");
-		ImGui::Text("   .  .      .  .   ");
-		ImGui::Text("   @ ... . . @  .   ");
-		ImGui::Text("    \\ .       \\ .   ");
-		ImGui::Text("     \\.        \\.   ");
-		ImGui::Text("      @ . . . . @   ");
+		ImGuiWindowFlags window_flags = 0;
+		window_flags |= ImGuiWindowFlags_NoResize;
+		window_flags |= ImGuiWindowFlags_NoCollapse;
+		window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
+		window_flags |= ImGuiWindowFlags_NoMove;
+		if (ImGui::Begin("Orientation", 0, window_flags))
+		{
+			ImGui::Text("   @ . . . . @   ");
+			ImGui::Text("   .\\        .\\   ");
+			ImGui::Text("   . \\       . \\   ");
+			ImGui::Text("   .  @ . . ... @   ");
+			ImGui::Text("   .  .      .  .   ");
+			ImGui::Text("   @ ... . . @  .   ");
+			ImGui::Text("    \\ .       \\ .   ");
+			ImGui::Text("     \\.        \\.   ");
+			ImGui::Text("      @ . . . . @   ");
+		}
+		ImGui::End();
 	}
-	ImGui::End();
-
 }
 
 void Engine::showShadingMenu()
