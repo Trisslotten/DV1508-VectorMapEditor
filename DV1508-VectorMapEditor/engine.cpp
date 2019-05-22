@@ -182,8 +182,7 @@ void Engine::showCameraSettings()
 		window_flags |= ImGuiWindowFlags_NoMove;
 		if (ImGui::Begin("Camera Settings", 0, window_flags))
 		{
-			ImGui::Button("Set FPS camera");
-			ImGui::Button("Set 3D Camera");
+			ImGui::Button("Change Camera");
 		}
 		ImGui::End();
 	}

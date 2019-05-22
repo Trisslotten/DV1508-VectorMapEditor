@@ -9,7 +9,12 @@
 
 void Camera::update()
 {
-	if (!fpsCamera)
+	if (fpsCamera)
+	{
+		glm::vec3 cameraDirection = glm::normalize(position - target);
+
+	}
+	else
 	{
 		float scroll = Window::mouseScroll().y;
 		float camTDistChange = -scrollSensitivity * scroll * camTargetDist;
