@@ -64,12 +64,6 @@ void VectorMap::init(int size)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, size, size, 0, GL_RGBA, GL_FLOAT, vectorMap.data());
 	glBindTexture(GL_TEXTURE_2D, 0);
-
-
-	addHeightShader.add("addheight.comp");
-	addHeightShader.compile();
-
-
 }
 
 void VectorMap::bind(int slot)
@@ -78,19 +72,7 @@ void VectorMap::bind(int slot)
 	glBindTexture(GL_TEXTURE_2D, texture);
 }
 
-void VectorMap::addHeight(glm::vec2 uv, float radius, float strength)
+void VectorMap::bindAsImage(int slot, GLenum access)
 {
-	addHeightShader.use();
-
-	addHeightShader.uniform("brushUV", uv);
-	addHeightShader.uniform("radius", radius);
-	addHeightShader.uniform("strength", strength);
-	addHeightShader.uniform("imgSize", glm::vec2(this->size));
-
-	glBindImageTexture(1, texture, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
-
-	float size = glm::ceil(2.f * radius * this->size) ;
-	int groupSize = 16;
-	int numGroups = glm::ceil(size / groupSize);
-	glDispatchCompute(numGroups, numGroups, 1);
+	glBindImageTexture(slot, texture, 0, GL_FALSE, 0, access, GL_RGBA32F);
 }

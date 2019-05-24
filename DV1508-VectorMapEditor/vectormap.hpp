@@ -10,12 +10,14 @@ class VectorMap
 public:
 	void init(int size = 1024);
 	void bind(int slot);
+	void bindAsImage(int slot, GLenum access = GL_READ_WRITE);
 
-	void addHeight(glm::vec2 uv, float radius, float strength);
+	glm::vec2 getSize()
+	{
+		return glm::vec2(size);
+	}
 private:
 	GLuint texture;
 	int size = -1;
 	std::vector<glm::vec4> vectorMap;
-
-	ShaderProgram addHeightShader;
 };

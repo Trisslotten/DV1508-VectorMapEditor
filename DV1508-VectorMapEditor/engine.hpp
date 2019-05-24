@@ -3,6 +3,7 @@
 #include "renderer.hpp"
 #include "texture.hpp"
 #include "minimap.hpp"
+#include "tools.hpp"
 
 class Engine
 {
@@ -30,6 +31,10 @@ private:
 	double dt;
 
 	Texture testIcon;
+
+	Tool* currentTool = nullptr;
+
+	std::vector<Tool*> tools;
 
 	struct
 	{

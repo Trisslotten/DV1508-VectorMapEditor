@@ -20,6 +20,12 @@ void Engine::init()
 	vmap.init(); // vmap.init(128);
 	renderer.setVectorMap(&vmap);
 
+	// add tools
+	tools.push_back(new ToolAddHeight());
+	for (auto tool : tools)
+	{
+		tool->init();
+	}
 
 	testIcon.loadTexture("assets/icon_tool_up.png");
 
@@ -53,13 +59,14 @@ void Engine::update()
 		glm::vec2 mouseUV = renderer.mouseTerrainIntersection();
 		
 		float radius = brushSettings.radius * 0.02f;
-		float strength = brushSettings.radius * 0.05f * dt;
+		float strength = brushSettings.strength * 0.5f * dt * radius;
 		
 		renderer.showBrush(mouseUV, radius);
 
-		if (Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_1))
+		if (Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_1) && currentTool)
 		{
-			vmap.addHeight(mouseUV, radius, strength);
+			currentTool->setVectorMap(&vmap);
+			currentTool->use(mouseUV, radius, strength);
 		}
 	}
 }
@@ -164,21 +171,16 @@ void Engine::showToolsMenu()
 
 	if (ImGui::Begin("Tools", 0, window_flags))
 	{
-		for (int i = 0; i < 4*2; i++)
+		for (int i = 0; i < tools.size(); i++)
 		{
 			if (i % 4 != 0)
 				ImGui::SameLine();
 
-			std::string name = "Tool";
-			if (i+1 < 10)
-				name += "0";
-			name += std::to_string(i + 1);
-
-			ImTextureID tex = reinterpret_cast<ImTextureID>(testIcon.getID());
-			ImGui::PushID(name.c_str());
+			ImTextureID tex = reinterpret_cast<ImTextureID>(tools[i]->getIconID());
+			ImGui::PushID(tools[i]->getIconID());
 			if (ImGui::ImageButton(tex, ImVec2(32, 32)))
 			{
-				toolsMenu.active = i;
+				currentTool = tools[i];
 			}
 			ImGui::PopID();
 		}
@@ -189,17 +191,6 @@ void Engine::showToolsMenu()
 
 		ImGui::SliderFloat("Size", &brushSettings.radius, 1, 10, "%.f");
 		ImGui::SliderFloat("Strength", &brushSettings.strength, 1, 10, "%.f");
-
-		if (toolsMenu.active % 2 != 0)
-		{
-			ImGui::Separator();
-			std::string text = "[settings for tool "+ std::to_string(toolsMenu.active+1) + "]";
-			ImGui::Text(text.c_str());
-			ImGui::Button("Button1");
-			ImGui::SameLine();
-			ImGui::Button("Button2");
-			//ImGui::SliderFloat("Size2", &brushSettings.radius, 1, 10);
-		}
 	}
 	ImGui::End();
 }
