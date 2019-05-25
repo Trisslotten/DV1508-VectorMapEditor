@@ -8,7 +8,7 @@
 class VectorMap
 {
 public:
-	void init(int size = 1024);
+	void init(int size = 256);
 	void bind(int slot);
 	void bindAsImage(int slot, GLenum access = GL_READ_WRITE);
 

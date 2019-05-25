@@ -1,12 +1,17 @@
 #version 440 core
 
 layout(location = 0) out vec4 outColor;
+layout(location = 1) out vec4 outUV;
 
 in vec3 vPos;
 in vec2 vUV;
 
+layout(std430, binding = 1) buffer buf
+{
+	vec2 brushUV;
+};
+
 uniform vec3 camPos;
-uniform vec2 brushUV;
 uniform float brushRadius;
 
 void brush(inout vec3 color)
@@ -47,4 +52,5 @@ void main()
 	brush(color);
 
 	outColor = vec4(color,1);
+	outUV = vec4(vUV, 0, 1);
 }

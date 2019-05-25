@@ -13,16 +13,19 @@ class Renderer
 {
 public:
 	void init();
+	void createTerrainFramebuffer();
 	void render();
 	void renderMiniMap();
 	void setVectorMap(VectorMap* vmap);
 	void toggleWireFrame();
 
-	void showBrush(glm::vec2 uv, float radius);
-	glm::vec2 mouseTerrainIntersection();
+	void showBrush(float radius);
+
+	// returns Shader Storage Buffer Object with uv
+	GLuint mouseTerrainIntersection();
 private:
 	void initShaders();
-	void initMesh();
+	void initTerrainMesh();
 	Camera camera;
 	Timer timer;
 	bool wireframe = false;
@@ -34,7 +37,18 @@ private:
 	std::vector<glm::vec2> terrainMesh;
 	std::vector<uint32_t> indices;
 
-	glm::vec2 brushUV;
+	GLuint terrainFB = 0;
+	GLuint terrainColorTex = 0;
+	GLuint terrainUVTex = 0;
+	GLuint depthRB = 0;
+
+	GLuint triangleVBO;
+	GLuint triangleVAO;
+	ShaderProgram triangleShader;
+
+	ShaderProgram mousePickingShader;
+	GLuint uvSSBO = 0;
+
 	float brushRadius = 0.f;
 
 	VectorMap* vectorMap = nullptr;

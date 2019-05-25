@@ -16,7 +16,7 @@ public:
 		vInit();
 	}
 
-	virtual void use(glm::vec2 mouseUV, float radius, float strength) = 0;
+	virtual void use(GLuint mouseUVSSBO, float radius, float strength) = 0;
 
 	virtual bool hasGUI() = 0;
 	virtual void showGUI() = 0;
@@ -51,7 +51,7 @@ public:
 	ToolAddHeight() {}
 	~ToolAddHeight() {}
 
-	virtual void use(glm::vec2 mouseUV, float radius, float strength) override;
+	virtual void use(GLuint mouseUVSSBO, float radius, float strength) override;
 	virtual bool hasGUI() override;
 	virtual void showGUI() override;
 	virtual bool hasSpecialGUI() override;

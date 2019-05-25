@@ -12,6 +12,8 @@ namespace
 {
 	std::unordered_map<GLFWwindow*, glm::vec2 > scrolls;
 
+	bool resized = false;
+
 	void scrollCallback(GLFWwindow* window, double x, double y)
 	{
 		scrolls[window] += glm::vec2(x, y);
@@ -22,6 +24,8 @@ namespace
 		//height = width * 9.0 / 16.0;
 		//glfwSetWindowSize(window, width, height);
 		glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+
+		resized = true;
 	}
 
 
@@ -168,6 +172,11 @@ bool Window::cursorIsEnabled()
 	return glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL;
 }
 
+bool Window::hasResized()
+{
+	return resized;
+}
+
 void Window::close()
 {
 	glfwTerminate();
@@ -180,6 +189,8 @@ GLFWwindow * Window::getGLFWWindow()
 
 void Window::update()
 {
+	resized = false;
+
 	updateTitle();
 
 	updateScrolls();
@@ -189,6 +200,7 @@ void Window::update()
 	swapBuffers();
 
 	pollEvents();
+
 }
 
 bool Window::shouldClose()

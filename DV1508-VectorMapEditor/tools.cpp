@@ -9,7 +9,7 @@ void ToolAddHeight::vInit()
 	addHeightShader.compile();
 }
 
-void ToolAddHeight::use(glm::vec2 mouseUV, float radius, float strength)
+void ToolAddHeight::use(GLuint mouseUVSSBO, float radius, float strength)
 {
 	if (vectorMap)
 	{
@@ -17,12 +17,13 @@ void ToolAddHeight::use(glm::vec2 mouseUV, float radius, float strength)
 
 		auto vMapSize = vectorMap->getSize();
 
-		addHeightShader.uniform("brushUV", mouseUV);
 		addHeightShader.uniform("radius", radius);
 		addHeightShader.uniform("strength", strength);
 		addHeightShader.uniform("imgSize", vMapSize);
 
-		vectorMap->bindAsImage(1);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, mouseUVSSBO);
+
+		vectorMap->bindAsImage(2);
 
 		float size = glm::ceil(2.f * radius * vMapSize.x);
 		float groupSize = 16.f;

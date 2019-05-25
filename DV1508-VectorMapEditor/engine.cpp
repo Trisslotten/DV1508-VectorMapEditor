@@ -54,20 +54,21 @@ void Engine::update()
 
 	ImGui::EndFrame();
 
+
 	
 	if (canUseTool())
 	{
-		glm::vec2 mouseUV = renderer.mouseTerrainIntersection();
+		GLuint uvSSBO = renderer.mouseTerrainIntersection();
 		
 		float radius = brushSettings.radius * 0.02f;
 		float strength = brushSettings.strength * 0.5f * dt * radius;
 		
-		renderer.showBrush(mouseUV, radius);
+		renderer.showBrush(radius);
 
 		if (Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_1) && currentTool)
 		{
 			currentTool->setVectorMap(&vmap);
-			currentTool->use(mouseUV, radius, strength);
+			currentTool->use(uvSSBO, radius, strength);
 		}
 	}
 }
@@ -79,6 +80,8 @@ void Engine::render()
 	minimap.bindFBO();
 	renderer.renderMiniMap();
 	minimap.unbindFBO();
+
+
 	renderer.render();
 
 	ImGui::Render();

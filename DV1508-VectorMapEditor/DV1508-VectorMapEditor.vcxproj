@@ -122,8 +122,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\addheight.comp" />
+    <None Include="shaders\mousepicking.comp" />
     <None Include="shaders\terrain.frag" />
     <None Include="shaders\terrain.vert" />
+    <None Include="shaders\triangle.frag" />
+    <None Include="shaders\triangle.vert" />
     <None Include="vectormap.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

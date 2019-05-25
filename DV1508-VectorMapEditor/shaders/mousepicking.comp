@@ -1,0 +1,18 @@
+#version 440 core
+
+layout(local_size_x = 1, local_size_y = 1) in;
+
+layout(std430, binding = 1) buffer buf
+{
+	vec2 uv;
+};
+
+layout(binding = 2, rg32f) readonly uniform image2D uvImg;
+
+uniform vec2 mousePos;
+
+void main()
+{	
+	uv = imageLoad(uvImg, ivec2(mousePos)).rg;
+}
+

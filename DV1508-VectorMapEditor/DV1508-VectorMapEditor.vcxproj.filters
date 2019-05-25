@@ -145,5 +145,14 @@
     <None Include="shaders\addheight.comp">
       <Filter>Source Files\graphics\shaders</Filter>
     </None>
+    <None Include="shaders\triangle.frag">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </None>
+    <None Include="shaders\triangle.vert">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </None>
+    <None Include="shaders\mousepicking.comp">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

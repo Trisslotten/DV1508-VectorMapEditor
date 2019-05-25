@@ -24,6 +24,8 @@ namespace Window
 
 	bool cursorIsEnabled();
 
+	bool hasResized();
+
 	glm::vec2 mouseMovement();
 	glm::vec2 mousePosition();
 	glm::vec2 size();

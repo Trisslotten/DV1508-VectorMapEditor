@@ -9,26 +9,117 @@
 void Renderer::init()
 {
 	initShaders();
-	initMesh();
+	initTerrainMesh();
+	createTerrainFramebuffer();
+
+
+	glm::vec2 triangleVerts[] = {
+		glm::vec2(0,0),
+		glm::vec2(2,0),
+		glm::vec2(0,2)
+	};
+
+	glGenVertexArrays(1, &triangleVAO);
+	glBindVertexArray(triangleVAO);
+
+	glGenBuffers(1, &triangleVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
+	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(glm::vec2), triangleVerts, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
+
+	glBindVertexArray(0);
+
+
+	glGenBuffers(1, &uvSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, uvSSBO);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec2), 0, GL_DYNAMIC_COPY);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, uvSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+}
+
+void Renderer::createTerrainFramebuffer()
+{
+	glDeleteTextures(1, &terrainColorTex);
+	glDeleteTextures(1, &terrainUVTex);
+	glDeleteRenderbuffers(1, &depthRB);
+	glDeleteFramebuffers(1, &terrainFB);
+
+
+	glGenFramebuffers(1, &terrainFB);
+	glBindFramebuffer(GL_FRAMEBUFFER, terrainFB);
+
+	auto size = Window::size();
+
+	glGenTextures(1, &terrainColorTex);
+	glGenTextures(1, &terrainUVTex);
+
+	glBindTexture(GL_TEXTURE_2D, terrainColorTex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glBindTexture(GL_TEXTURE_2D, terrainUVTex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, size.x, size.y, 0, GL_RG, GL_UNSIGNED_BYTE, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glGenRenderbuffers(1, &depthRB);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthRB);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, size.x, size.y);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRB);
+
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, terrainColorTex, 0);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, terrainUVTex, 0);
+
+	GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	glDrawBuffers(2, DrawBuffers);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		std::cout << "ERROR: Could not create terrain framebuffer\n";
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer::render()
 {
+	if (Window::hasResized())
+	{
+		auto size = Window::size();
+		createTerrainFramebuffer();
+		std::cout << "Recreating framebuffers: " << (int)size.x << "x" << (int)size.y << "\n";
+	}
+
 	camera.update();
 
 	glm::mat4 cam = camera.getTransform();
 
 	terrainShader.use();
 	terrainShader.uniform("camTransform", cam);
-	terrainShader.uniform("brushUV", brushUV);
 	terrainShader.uniform("camPos", camera.getPosition());
 	terrainShader.uniform("vectorMap", 1);
 	terrainShader.uniform("brushRadius", brushRadius);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, uvSSBO);
 
 	if (vectorMap)
 	{
 		vectorMap->bind(1);
 	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, terrainFB);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glm::vec4 uvClearColor{ -1,-1,0,1 };
+	glClearBufferfv(GL_COLOR, 1, (float*)&uvClearColor);
 
 	glBindVertexArray(terrainVAO);
 	int x = terrainMeshRes - 1;
@@ -37,6 +128,20 @@ void Renderer::render()
 	glBindVertexArray(0);
 
 	brushRadius = 0;
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, terrainColorTex);
+
+	triangleShader.use();
+	triangleShader.uniform("tex", 0);
+
+	glBindVertexArray(triangleVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 }
 
 void Renderer::renderMiniMap()
@@ -72,14 +177,14 @@ void Renderer::toggleWireFrame()
 	wireframe = (wireframe == false) ? true : false;
 }
 
-void Renderer::showBrush(glm::vec2 uv, float radius)
+void Renderer::showBrush(float radius)
 {
 	brushRadius = radius;
-	brushUV = uv;
 }
 
-glm::vec2 Renderer::mouseTerrainIntersection()
+GLuint Renderer::mouseTerrainIntersection()
 {
+	/*
 	glm::mat4 invCam = camera.getInverse();
 	glm::vec2 mousePos = Input::mousePosition();
 	glm::vec2 ndcMousePos = 2.f * mousePos / Window::size() - 1.f;
@@ -97,7 +202,32 @@ glm::vec2 Renderer::mouseTerrainIntersection()
 	glm::vec3 intersection = t * dir + origin;
 
 	glm::vec2 result = (glm::vec2(intersection.x, intersection.z) + 1.f) / 2.f;
-	return result;
+	*/
+
+	glBindImageTexture(2, terrainUVTex, 0, GL_FALSE, 0, GL_READ_ONLY, GL_RG32F);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, uvSSBO);
+
+	glm::vec2 mousePos = Input::mousePosition();
+	mousePos.y = Window::size().y - mousePos.y;
+
+	mousePickingShader.use();
+	mousePickingShader.uniform("mousePos", mousePos);
+
+	glDispatchCompute(1, 1, 1);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	/*
+	glm::vec2 uv;
+
+	glm::vec2 *ptr = (glm::vec2*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
+	uv = *ptr;
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
+	std::cout << uv.x << ", " << uv.y << "\n";
+	*/
+
+
+	return uvSSBO;
 }
 
 
@@ -106,9 +236,16 @@ void Renderer::initShaders()
 	terrainShader.add("terrain.vert");
 	terrainShader.add("terrain.frag");
 	terrainShader.compile();
+
+	triangleShader.add("triangle.vert");
+	triangleShader.add("triangle.frag");
+	triangleShader.compile();
+
+	mousePickingShader.add("mousepicking.comp");
+	mousePickingShader.compile();
 }
 
-void Renderer::initMesh()
+void Renderer::initTerrainMesh()
 {
 	terrainMesh.reserve(terrainMeshRes*terrainMeshRes);
 	for (int y = 0; y < terrainMeshRes; y++)

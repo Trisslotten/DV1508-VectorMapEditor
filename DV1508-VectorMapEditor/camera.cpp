@@ -77,7 +77,7 @@ void Camera::update()
 		);
 
 		auto ws = Window::size();
-		perspective = glm::perspective(glm::radians(fov), ws.x / ws.y, 0.1f, 100.f);
+		perspective = glm::perspective(glm::radians(fov), ws.x / ws.y, 0.01f, 100.f);
 		transform = perspective * view;
 	}
 }
