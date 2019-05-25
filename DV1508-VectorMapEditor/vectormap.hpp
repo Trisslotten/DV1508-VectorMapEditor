@@ -8,9 +8,10 @@
 class VectorMap
 {
 public:
-	void init(int size = 256);
+	void init(int size = 1024);
 	void bind(int slot);
 	void bindAsImage(int slot, GLenum access = GL_READ_WRITE);
+
 
 	glm::vec2 getSize()
 	{

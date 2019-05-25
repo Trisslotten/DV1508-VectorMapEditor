@@ -29,6 +29,8 @@ void ToolAddHeight::use(GLuint mouseUVSSBO, float radius, float strength)
 		float groupSize = 16.f;
 		int numGroups = glm::ceil(size / groupSize);
 		glDispatchCompute(numGroups, numGroups, 1);
+
+		glBindImageTexture(2, 0, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
 	}
 }
 

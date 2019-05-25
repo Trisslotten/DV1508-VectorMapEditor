@@ -16,16 +16,18 @@ uniform vec2 imgSize;
 void main()
 {
 	ivec2 i = ivec2(gl_GlobalInvocationID.xy);
+	if(i.x >= 0 && i.x < imgSize.x && i.y >= 0 && i.y < imgSize.y)
+	{
+		vec2 uv = vec2(i) / imgSize + brushUV - radius;
 
-	vec2 uv = vec2(i) / imgSize + brushUV - radius;
+		ivec2 pixel = ivec2(uv * imgSize);
 
-	ivec2 pixel = ivec2(uv * imgSize);
+		vec4 disp = imageLoad(img, pixel);
 
-	vec4 disp = imageLoad(img, pixel);
+		float distance = length(uv - brushUV);
 
-	float distance = length(uv - brushUV);
+		disp.y += strength * smoothstep(radius, 0, distance);
 
-	disp.y += strength * smoothstep(radius, 0, distance);
-
-	imageStore(img, pixel, disp);
+		imageStore(img, pixel, disp);
+	}
 }

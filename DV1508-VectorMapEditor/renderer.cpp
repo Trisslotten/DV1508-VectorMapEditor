@@ -215,10 +215,12 @@ GLuint Renderer::mouseTerrainIntersection()
 
 	glDispatchCompute(1, 1, 1);
 
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
 	/*
 	glm::vec2 uv;
-
 	glm::vec2 *ptr = (glm::vec2*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
 	uv = *ptr;
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);

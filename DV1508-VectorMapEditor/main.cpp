@@ -32,6 +32,8 @@ int main(void)
 	//setExecutablePath();
 	Window::open();
 
+	Input::initialize();
+
 	Engine engine;
 	engine.init();
 
@@ -40,6 +42,7 @@ int main(void)
 		engine.update();
 		engine.render();
 		Window::update();
+		Input::reset();
 	}
 	Window::close();
 	return 0;
