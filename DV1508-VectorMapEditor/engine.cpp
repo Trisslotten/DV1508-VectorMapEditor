@@ -31,6 +31,16 @@ void Engine::init()
 
 	glm::vec3 clearColor{ 0.7f };
 	glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0);
+
+	bezierData.data = new float[4];
+	for (int i = 0; i < 4; i++) {
+		if (i < 2) {
+			bezierData.data[i] = 0.f;
+		}
+		else {
+			bezierData.data[i] = 1.f;
+		}
+	}
 }
 
 void Engine::update()
@@ -159,8 +169,7 @@ void Engine::showGraphEditor() {
 	window_flags |= ImGuiWindowFlags_NoCollapse;
 	window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 	if (ImGui::Begin("Graph editor", 0, window_flags)) {
-		float arr[] = { 0.f, 0.f, 0.1f, 1.f };
-		Bezier::bezier("Pingas", arr);
+		Bezier::bezier(bezierData.data);
 	} ImGui::End();
 }
 

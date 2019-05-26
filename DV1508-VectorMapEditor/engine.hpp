@@ -51,4 +51,8 @@ private:
 		float radius = 1.f;
 		float strength = 1.f;
 	} brushSettings;
+
+	struct {
+		float* data;
+	} bezierData;
 };
