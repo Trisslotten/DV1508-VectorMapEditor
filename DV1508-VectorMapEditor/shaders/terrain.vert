@@ -8,6 +8,7 @@ out vec2 vUV;
 uniform mat4 camTransform;
 uniform sampler2D vectorMap;
 
+
 void main()
 {
 	vec2 t = 2*uv-1;
@@ -18,5 +19,6 @@ void main()
 
 	vPos = pos;
 	vUV = uv;
+
 	gl_Position = camTransform * vec4(pos, 1.0);
 }

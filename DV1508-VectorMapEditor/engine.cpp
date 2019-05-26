@@ -60,7 +60,7 @@ void Engine::update()
 	{
 		GLuint uvSSBO = renderer.mouseTerrainIntersection();
 		
-		float radius = brushSettings.radius * 0.02f;
+		float radius = glm::pow(brushSettings.radius*0.1f, 1.5f) * 0.2f;
 		float strength = brushSettings.strength * 0.5f * dt * radius;
 		
 		renderer.showBrush(radius);
