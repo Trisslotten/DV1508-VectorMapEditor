@@ -34,8 +34,6 @@ private:
 	Timer frameTime;
 	double dt;
 
-	Texture testIcon;
-
 	Tool* currentTool = nullptr;
 
 	std::vector<Tool*> tools;

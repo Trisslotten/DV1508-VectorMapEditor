@@ -22,12 +22,12 @@ void Engine::init()
 
 	// add tools
 	tools.push_back(new ToolAddHeight());
+	tools.push_back(new ToolExpand());
+	tools.push_back(new ToolSmoothen());
 	for (auto tool : tools)
 	{
 		tool->init();
 	}
-
-	testIcon.loadTexture("assets/icon_tool_up.png");
 
 	glm::vec3 clearColor{ 0.7f };
 	glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0);
@@ -59,10 +59,15 @@ void Engine::update()
 	if (canUseTool())
 	{
 		GLuint uvSSBO = renderer.mouseTerrainIntersection();
-		
+
 		float radius = glm::pow(brushSettings.radius*0.1f, 1.5f) * 0.2f;
 		float strength = brushSettings.strength * 0.5f * dt * radius;
 		
+		if (Input::isKeyDown(GLFW_KEY_LEFT_CONTROL))
+		{
+			strength *= -1.f;
+		}
+
 		renderer.showBrush(radius);
 
 		if (Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_1) && currentTool)
@@ -225,7 +230,16 @@ void Engine::showToolsMenu()
 		}
 
 		ImGui::Separator();
-		//ImGui::Text("Brush Settings");
+		std::string toolNameText = "Selected: ";
+		if (currentTool)
+		{
+			toolNameText += currentTool->name();
+		}
+		else
+		{
+			toolNameText += "None";
+		}
+		ImGui::Text(toolNameText.c_str());
 		ImGui::PushItemWidth(100);
 
 		ImGui::SliderFloat("Size", &brushSettings.radius, 1, 10, "%.f");

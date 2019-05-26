@@ -53,3 +53,70 @@ void ToolAddHeight::showSpecialGUI()
 {
 
 }
+
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+
+void ToolSmoothen::use(GLuint mouseUVSSBO, float radius, float strength)
+{
+
+}
+
+bool ToolSmoothen::hasGUI()
+{
+	return false;
+}
+
+void ToolSmoothen::showGUI()
+{
+}
+
+bool ToolSmoothen::hasSpecialGUI()
+{
+	return false;
+}
+
+void ToolSmoothen::showSpecialGUI()
+{
+}
+
+void ToolSmoothen::vInit()
+{
+
+}
+
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+
+void ToolExpand::use(GLuint mouseUVSSBO, float radius, float strength)
+{
+}
+
+bool ToolExpand::hasGUI()
+{
+	return false;
+}
+
+void ToolExpand::showGUI()
+{
+}
+
+bool ToolExpand::hasSpecialGUI()
+{
+	return false;
+}
+
+void ToolExpand::showSpecialGUI()
+{
+}
+
+void ToolExpand::vInit()
+{
+}
+
+std::string ToolExpand::iconFile()
+{
+	return "icon_tool_expand.png";
+}

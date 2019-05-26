@@ -24,6 +24,8 @@ public:
 	virtual bool hasSpecialGUI() = 0;
 	virtual void showSpecialGUI() = 0;
 
+	virtual std::string name() = 0;
+
 	virtual GLuint getIconID()
 	{
 		return icon.getID();
@@ -33,6 +35,7 @@ public:
 	{
 		this->vectorMap = vectorMap;
 	}
+
 protected:
 	VectorMap* vectorMap = nullptr;
 
@@ -56,6 +59,11 @@ public:
 	virtual void showGUI() override;
 	virtual bool hasSpecialGUI() override;
 	virtual void showSpecialGUI() override;
+
+	virtual std::string name()
+	{
+		return "Change Height";
+	}
 private:
 	virtual void vInit() override;
 	virtual std::string iconFile() override
@@ -64,4 +72,43 @@ private:
 	}
 
 	ShaderProgram addHeightShader;
+};
+
+class ToolSmoothen : public Tool
+{
+public:
+	virtual void use(GLuint mouseUVSSBO, float radius, float strength) override;
+	virtual bool hasGUI() override;
+	virtual void showGUI() override;
+	virtual bool hasSpecialGUI() override;
+	virtual void showSpecialGUI() override;
+
+	virtual std::string name()
+	{
+		return "Smoothen";
+	}
+private:
+	virtual void vInit() override;
+	virtual std::string iconFile() override
+	{
+		return "icon_tool_smoothen.png";
+	}
+};
+
+class ToolExpand : public Tool
+{
+public:
+	virtual void use(GLuint mouseUVSSBO, float radius, float strength) override;
+	virtual bool hasGUI() override;
+	virtual void showGUI() override;
+	virtual bool hasSpecialGUI() override;
+	virtual void showSpecialGUI() override;
+
+	virtual std::string name()
+	{
+		return "Expand";
+	}
+private:
+	virtual void vInit() override;
+	virtual std::string iconFile() override;
 };
