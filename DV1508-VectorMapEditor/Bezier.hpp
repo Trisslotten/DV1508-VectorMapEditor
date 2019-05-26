@@ -29,7 +29,7 @@ namespace Bezier {
 	}
 
 
-	int bezier(std::string name, float P[4]) {
+	int bezier(float P[4]) {
 
 		const int segments = 64;
 
@@ -38,7 +38,7 @@ namespace Bezier {
 		ImDrawList* drawList = ImGui::GetWindowDrawList();
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 
-		int changed = ImGui::SliderFloat4(name.c_str(), P, 0, 1, "%.3f", 1.0f);
+		int changed = ImGui::SliderFloat4("", P, 0, 1, "%.3f", 1.0f);
 		int hovered = ImGui::IsItemActive() || ImGui::IsItemHovered();
 		ImGui::Dummy(ImVec2(0, 3));
 
@@ -53,7 +53,7 @@ namespace Bezier {
 			return changed;
 		}
 		
-		const ImGuiID id = window->GetID(name.c_str());
+		//const ImGuiID id = window->GetID(name.c_str());
 
 		ImGui::RenderFrame(graphBox.Min, graphBox.Max, ImGui::GetColorU32(ImGuiCol_FrameBg, 1), true, style.FrameRounding);
 
@@ -82,11 +82,9 @@ namespace Bezier {
 		const int lineWidth = 4;
 		
 			char buf[128];
-			sprintf_s(buf, "0##%s", name.c_str());
 
 			// handle gragraphBoxers
-			for (int i = 0; i < 2; ++i)
-			{
+			for (int i = 0; i < 2; ++i) {
 				ImVec2 pos = ImVec2(P[i * 2 + 0], 1 - P[i * 2 + 1]) * (graphBox.Max - graphBox.Min) + graphBox.Min;
 				ImGui::SetCursorScreenPos(pos - ImVec2(circleRadius, circleRadius));
 				ImGui::InvisibleButton((buf[0]++, buf), ImVec2(2 * circleRadius, 2 * circleRadius));
@@ -102,18 +100,24 @@ namespace Bezier {
 				}
 			}
 
+			for (int i = 0; i < 4; i++) {
+				if (P[i] < 0.f) {
+					P[i] = 0.f;
+				} else if (P[i] > 1.f) {
+					P[i] = 1.f;
+				}
+			}
+
 			if (hovered || changed) drawList->PushClipRectFullScreen();
 
 			// draw curve
-			{
-				ImColor color(ImGui::GetStyle().Colors[ImGuiCol_PlotLines]);
-				for (int i = 0; i < segments; ++i) {
-					ImVec2 p = { results[i + 0].x, 1 - results[i + 0].y };
-					ImVec2 q = { results[i + 1].x, 1 - results[i + 1].y };
-					ImVec2 r(p.x * (graphBox.Max.x - graphBox.Min.x) + graphBox.Min.x, p.y * (graphBox.Max.y - graphBox.Min.y) + graphBox.Min.y);
-					ImVec2 s(q.x * (graphBox.Max.x - graphBox.Min.x) + graphBox.Min.x, q.y * (graphBox.Max.y - graphBox.Min.y) + graphBox.Min.y);
-					drawList->AddLine(r, s, color, lineWidth);
-				}
+			ImColor color(ImGui::GetStyle().Colors[ImGuiCol_PlotLines]);
+			for (int i = 0; i < segments; ++i) {
+				ImVec2 p = { results[i + 0].x, 1 - results[i + 0].y };
+				ImVec2 q = { results[i + 1].x, 1 - results[i + 1].y };
+				ImVec2 r(p.x * (graphBox.Max.x - graphBox.Min.x) + graphBox.Min.x, p.y * (graphBox.Max.y - graphBox.Min.y) + graphBox.Min.y);
+				ImVec2 s(q.x * (graphBox.Max.x - graphBox.Min.x) + graphBox.Min.x, q.y * (graphBox.Max.y - graphBox.Min.y) + graphBox.Min.y);
+				drawList->AddLine(r, s, color, lineWidth);
 			}
 
 			// draw lines and gragraphBoxers
