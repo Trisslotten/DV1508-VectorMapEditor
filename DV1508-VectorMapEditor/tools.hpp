@@ -111,4 +111,6 @@ public:
 private:
 	virtual void vInit() override;
 	virtual std::string iconFile() override;
+
+	ShaderProgram expandShader;
 };

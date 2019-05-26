@@ -177,6 +177,10 @@ void ShaderProgram::reload()
 
 void ShaderProgram::use()
 {
+	if (!compiled)
+	{
+		std::cout << "Warning: Shader is not compiled!\n";
+	}
 	glUseProgram(id);
 }
 

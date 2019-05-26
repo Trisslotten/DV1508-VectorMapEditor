@@ -31,6 +31,8 @@ void ToolAddHeight::use(GLuint mouseUVSSBO, float radius, float strength)
 		glDispatchCompute(numGroups, numGroups, 1);
 
 		glBindImageTexture(2, 0, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+
+		glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	}
 }
 
@@ -92,6 +94,29 @@ void ToolSmoothen::vInit()
 
 void ToolExpand::use(GLuint mouseUVSSBO, float radius, float strength)
 {
+	if (vectorMap)
+	{
+		expandShader.use();
+
+		auto vMapSize = vectorMap->getSize();
+
+		expandShader.uniform("radius", radius);
+		expandShader.uniform("strength", strength);
+		expandShader.uniform("imgSize", vMapSize);
+
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, mouseUVSSBO);
+
+		vectorMap->bindAsImage(2);
+
+		float size = glm::ceil(2.f * radius * vMapSize.x);
+		float groupSize = 16.f;
+		int numGroups = glm::ceil(size / groupSize);
+		glDispatchCompute(numGroups, numGroups, 1);
+
+		glBindImageTexture(2, 0, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+
+		glMemoryBarrier(GL_ALL_BARRIER_BITS);
+	}
 }
 
 bool ToolExpand::hasGUI()
@@ -114,6 +139,8 @@ void ToolExpand::showSpecialGUI()
 
 void ToolExpand::vInit()
 {
+	expandShader.add("expand.comp");
+	expandShader.compile();
 }
 
 std::string ToolExpand::iconFile()

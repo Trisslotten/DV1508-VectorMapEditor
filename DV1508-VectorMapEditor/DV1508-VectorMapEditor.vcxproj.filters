@@ -154,5 +154,8 @@
     <None Include="shaders\quad.frag">
       <Filter>Source Files\graphics\shaders</Filter>
     </None>
+    <None Include="shaders\expand.comp">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
