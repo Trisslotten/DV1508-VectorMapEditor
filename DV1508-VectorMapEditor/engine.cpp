@@ -68,23 +68,56 @@ void Engine::update()
 	
 	if (canUseTool())
 	{
-		GLuint uvSSBO = renderer.mouseTerrainIntersection();
-
 		float radius = glm::pow(brushSettings.radius*0.1f, 1.5f) * 0.2f;
 		float strength = brushSettings.strength * 0.5f * dt * radius;
-		
-		if (Input::isKeyDown(GLFW_KEY_LEFT_CONTROL))
+
+		float normStr = (brushSettings.strength-1.f) / (brushSettings.maxStrength-1.f);
+
+		renderer.showBrush(radius, normStr);
+
+		if (!brushCrossActive)
 		{
-			strength *= -1.f;
+			GLuint uvSSBO = renderer.mouseTerrainIntersection();
+
+			if (Input::isKeyDown(GLFW_KEY_LEFT_CONTROL))
+			{
+				strength *= -1.f;
+			}
+
+			if (Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_1) && currentTool)
+			{
+				currentTool->setVectorMap(&vmap);
+				currentTool->use(uvSSBO, radius, strength);
+			}
+		}
+	}
+
+	if (Input::isKeyDown(GLFW_KEY_LEFT_ALT))
+	{
+		if (!brushCrossActive)
+		{
+			brushCrossActive = true;
+
+			glm::vec2 ws = Window::size();
+			glm::vec2 mp = Input::mousePosition();
+
+			brushCrossNDC = 2.f*mp / ws - 1.f;
+			brushCrossNDC.y = -brushCrossNDC.y;
 		}
 
-		renderer.showBrush(radius);
+		glm::vec2 mm = Input::mouseMovement();
 
-		if (Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_1) && currentTool)
-		{
-			currentTool->setVectorMap(&vmap);
-			currentTool->use(uvSSBO, radius, strength);
-		}
+		brushSettings.strength += 0.05f*mm.x;
+		brushSettings.radius -= 0.05f*mm.y;
+
+		brushSettings.strength = glm::clamp(brushSettings.strength, 1.f, 10.f);
+		brushSettings.radius = glm::clamp(brushSettings.radius, 1.f, 10.f);
+
+		renderer.showBrushCross(brushCrossNDC);
+	}
+	else
+	{
+		brushCrossActive = false;
 	}
 }
 
@@ -251,8 +284,8 @@ void Engine::showToolsMenu()
 		ImGui::Text(toolNameText.c_str());
 		ImGui::PushItemWidth(100);
 
-		ImGui::SliderFloat("Size", &brushSettings.radius, 1, 10, "%.f");
-		ImGui::SliderFloat("Strength", &brushSettings.strength, 1, 10, "%.f");
+		ImGui::SliderFloat("Size", &brushSettings.radius, 1, brushSettings.maxRadius, "%.f");
+		ImGui::SliderFloat("Strength", &brushSettings.strength, 1, brushSettings.maxStrength, "%.f");
 	}
 	ImGui::End();
 }

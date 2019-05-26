@@ -13,18 +13,22 @@ void Renderer::init()
 	createTerrainFramebuffer();
 
 
-	glm::vec2 triangleVerts[] = {
-		glm::vec2(0,0),
-		glm::vec2(2,0),
-		glm::vec2(0,2)
+	brushCross.loadTexture("assets/super.png");
+
+
+	glm::vec2 quadVerts[] = {
+		glm::vec2(-1,-1),
+		glm::vec2(1,-1),
+		glm::vec2(1,1),
+		glm::vec2(-1,1),
 	};
 
-	glGenVertexArrays(1, &triangleVAO);
-	glBindVertexArray(triangleVAO);
+	glGenVertexArrays(1, &quadVAO);
+	glBindVertexArray(quadVAO);
 
-	glGenBuffers(1, &triangleVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
-	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(glm::vec2), triangleVerts, GL_STATIC_DRAW);
+	glGenBuffers(1, &quadVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(glm::vec2), quadVerts, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
@@ -92,9 +96,9 @@ void Renderer::render()
 {
 	if (Window::hasResized())
 	{
-		auto size = Window::size();
+		auto wsize = Window::size();
 		createTerrainFramebuffer();
-		std::cout << "Recreating framebuffers: " << (int)size.x << "x" << (int)size.y << "\n";
+		std::cout << "Recreating framebuffers: " << (int)wsize.x << "x" << (int)wsize.y << "\n";
 	}
 
 	camera.update();
@@ -106,6 +110,7 @@ void Renderer::render()
 	terrainShader.uniform("camPos", camera.getPosition());
 	terrainShader.uniform("vectorMap", 1);
 	terrainShader.uniform("brushRadius", brushRadius);
+	terrainShader.uniform("brushStrength", brushStrength);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, uvSSBO);
 
@@ -131,17 +136,38 @@ void Renderer::render()
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, terrainColorTex);
 
-	triangleShader.use();
-	triangleShader.uniform("tex", 0);
+	quadShader.use();
+	quadShader.uniform("aspect", 1.f);
+	quadShader.uniform("scale", glm::vec2(1.f));
+	quadShader.uniform("offset", glm::vec2(0));
+	quadShader.uniform("tex", 0);
 
-	glBindVertexArray(triangleVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
-	glBindVertexArray(0);
+	glBindVertexArray(quadVAO);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	if (showingBrushCross)
+	{
+		brushCross.bind(0);
+
+		auto wsize = Window::size();
+		quadShader.uniform("aspect", wsize.x / wsize.y);
+		quadShader.uniform("scale", 0.3f*glm::vec2(1, -1));
+		quadShader.uniform("offset", brushCrossOffset);
+
+		glDepthFunc(GL_ALWAYS);
+		glDisable(GL_CULL_FACE);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+		glEnable(GL_CULL_FACE);
+		glDepthFunc(GL_LESS);
+	}
+	showingBrushCross = false;
+
+	glBindVertexArray(0);
 }
 
 void Renderer::renderMiniMap()
@@ -177,9 +203,16 @@ void Renderer::toggleWireFrame()
 	wireframe = (wireframe == false) ? true : false;
 }
 
-void Renderer::showBrush(float radius)
+void Renderer::showBrush(float radius, float strength)
 {
 	brushRadius = radius;
+	brushStrength = strength;
+}
+
+void Renderer::showBrushCross(glm::vec2 offset)
+{
+	brushCrossOffset = offset;
+	showingBrushCross = true;
 }
 
 GLuint Renderer::mouseTerrainIntersection()
@@ -215,7 +248,7 @@ GLuint Renderer::mouseTerrainIntersection()
 
 	glDispatchCompute(1, 1, 1);
 
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
@@ -239,9 +272,9 @@ void Renderer::initShaders()
 	terrainShader.add("terrain.frag");
 	terrainShader.compile();
 
-	triangleShader.add("triangle.vert");
-	triangleShader.add("triangle.frag");
-	triangleShader.compile();
+	quadShader.add("quad.vert");
+	quadShader.add("quad.frag");
+	quadShader.compile();
 
 	mousePickingShader.add("mousepicking.comp");
 	mousePickingShader.compile();

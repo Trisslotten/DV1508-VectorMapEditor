@@ -9,6 +9,7 @@
 #include "camera.hpp"
 #include "vectormap.hpp"
 #include "minimap.hpp"
+#include "texture.hpp"
 class Renderer
 {
 public:
@@ -19,13 +20,16 @@ public:
 	void setVectorMap(VectorMap* vmap);
 	void toggleWireFrame();
 
-	void showBrush(float radius);
+	void showBrush(float radius, float strength);
+
+	void showBrushCross(glm::vec2 offset);
 
 	// returns Shader Storage Buffer Object with uv
 	GLuint mouseTerrainIntersection();
 private:
 	void initShaders();
 	void initTerrainMesh();
+
 	Camera camera;
 	Timer timer;
 	bool wireframe = false;
@@ -42,14 +46,19 @@ private:
 	GLuint terrainUVTex = 0;
 	GLuint depthRB = 0;
 
-	GLuint triangleVBO;
-	GLuint triangleVAO;
-	ShaderProgram triangleShader;
+	GLuint quadVBO;
+	GLuint quadVAO;
+	ShaderProgram quadShader;
 
 	ShaderProgram mousePickingShader;
 	GLuint uvSSBO = 0;
 
+	Texture brushCross;
+	glm::vec2 brushCrossOffset;
+	bool showingBrushCross = false;
+
 	float brushRadius = 0.f;
+	float brushStrength = 0.f;
 
 	VectorMap* vectorMap = nullptr;
 };

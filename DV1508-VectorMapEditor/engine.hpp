@@ -38,6 +38,10 @@ private:
 
 	std::vector<Tool*> tools;
 
+
+	bool brushCrossActive = false;
+	glm::vec2 brushCrossNDC;
+
 	struct
 	{
 		// Hack, don't use
@@ -48,6 +52,9 @@ private:
 	{
 		float radius = 1.f;
 		float strength = 1.f;
+
+		const float maxRadius= 10.f;
+		const float maxStrength = 10.f;
 	} brushSettings;
 
 	struct {

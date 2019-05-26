@@ -13,17 +13,25 @@ layout(std430, binding = 1) buffer buf
 
 uniform vec3 camPos;
 uniform float brushRadius;
+uniform float brushStrength;
 
 uniform sampler2D vectorMap;
 
 void brush(inout vec3 color)
 {
-	
+	float dx = length(dFdx(vPos));
+	float dy = length(dFdy(vPos));
+
 	float radius = brushRadius;
-	float thickness = 0.005;
+	float thickness = 1.5*max(dx,dy);
 	float len = length(vUV - brushUV);
 	float t = smoothstep(radius, radius - thickness, len)*smoothstep(radius - thickness, radius, len);
-	color = mix(color, vec3(3,0,0), t);
+
+	vec3 highColor = vec3(3,0,0);
+	vec3 lowColor = vec3(0,0,3);
+	vec3 circleColor = mix(lowColor, highColor, brushStrength);
+
+	color = mix(color, circleColor, t);
 }
 
 vec3 calcNormal()
