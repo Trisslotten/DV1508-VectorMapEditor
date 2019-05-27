@@ -6,13 +6,20 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
-
+#include <GLFW\glfw3.h>
+#include "imgui/imgui.h"
 void Camera::update()
 {
 	if (fpsCamera)
 	{
-		glm::vec3 cameraDirection = glm::normalize(position - target);
-
+		auto ws = Window::size();
+		view = glm::lookAt(
+			fpscam.pos,       
+			fpscam.target, 
+			fpscam.up
+		);
+		perspective = glm::perspective(glm::radians(fov), ws.x / ws.y, 0.01f, 100.f);
+		transform = perspective * view;
 	}
 	else
 	{
@@ -20,7 +27,6 @@ void Camera::update()
 		float camTDistChange = -scrollSensitivity * scroll * camTargetDist;
 
 		const glm::vec3 up{ 0,1,0 };
-
 		glm::vec2 mouseMov = Input::mouseMovement();
 		if (Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_2))
 		{
@@ -69,16 +75,17 @@ void Camera::update()
 
 		position = yaw_transform * pitch_transform*glm::vec4(camTargetDist*glm::vec3(-1, 0, 0), 1);
 		position += target;
-
 		view = glm::lookAt(
 			position,
 			target,
 			up
 		);
-
+		std::cout << target.x << " : " << target.y << " : " << target.z << std::endl;
 		auto ws = Window::size();
 		perspective = glm::perspective(glm::radians(fov), ws.x / ws.y, 0.01f, 100.f);
 		transform = perspective * view;
+		fpscam.pos = position;
+		fpscam.target = target;
 	}
 }
 

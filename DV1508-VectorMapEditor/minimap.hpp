@@ -1,10 +1,15 @@
 #pragma once
+#include <glm/common.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/constants.hpp>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 class Minimap
 {
 private:
 	GLuint fbo, texture, depthrenderbuffer;
+	glm::mat4 view;
 public:
 	Minimap()
 	{
@@ -24,6 +29,33 @@ public:
 		glDrawBuffers(1, DrawBuffers);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//Hack-af
+		view[0][0] = -1.86265e-09;
+		view[0][1] = 0.995004;
+		view[0][2] = 0.0998334;
+		view[0][3] = 0;
+		view[1][0] = 0;
+		view[1][1] = 0.0998334;
+		view[1][2] = 0.995004;
+		view[1][3] = 0;
+		view[2][0] = 1;
+		view[2][1] = 1.85334e-09;
+		view[2][2] = -1.85944e-10;
+		view[2][3] = 0;
+		view[3][0] = -0;
+		view[3][1] = 2.98023e-08;
+		view[3][2] = -3;
+		view[3][3] = 1;
+	}
+	glm::vec3 getPosition()
+	{
+		return view[3];
+	}
+	inline glm::mat4 getTransform()
+	{
+		auto ws = Window::size();
+		glm::mat4 perspective = glm::perspective(glm::radians(60.f), 300.f / 300.f, 0.01f, 100.f);
+		return perspective * view;
 	}
 	inline void bindFBO()
 	{

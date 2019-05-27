@@ -170,15 +170,14 @@ void Renderer::render()
 	glBindVertexArray(0);
 }
 
-void Renderer::renderMiniMap()
+void Renderer::renderMiniMap(glm::mat4 transform, glm::vec3 camPos)
 {
 
-	glm::mat4 cam = camera.getTransform();
 
 	terrainShader.use();
-	terrainShader.uniform("camTransform", cam);
+	terrainShader.uniform("camTransform", transform);
 	terrainShader.uniform("mouseUV", glm::vec2(-100));
-	terrainShader.uniform("camPos", camera.getPosition());
+	terrainShader.uniform("camPos", camPos);
 	terrainShader.uniform("vectorMap", 1);
 
 	if (vectorMap)
@@ -192,7 +191,6 @@ void Renderer::renderMiniMap()
 	glDrawElements(GL_TRIANGLES, numTris, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
-
 void Renderer::setVectorMap(VectorMap * vmap)
 {
 	this->vectorMap = vmap;
@@ -201,6 +199,11 @@ void Renderer::setVectorMap(VectorMap * vmap)
 void Renderer::toggleWireFrame()
 {
 	wireframe = (wireframe == false) ? true : false;
+}
+
+void Renderer::toggleFPSCamera()
+{
+	camera.toggleFPS();
 }
 
 void Renderer::showBrush(float radius, float strength)

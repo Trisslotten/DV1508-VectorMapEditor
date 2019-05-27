@@ -126,7 +126,7 @@ void Engine::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	minimap.bindFBO();
-	renderer.renderMiniMap();
+	renderer.renderMiniMap(minimap.getTransform(), minimap.getPosition());
 	minimap.unbindFBO();
 
 
@@ -236,10 +236,12 @@ void Engine::showCameraSettings()
 		window_flags |= ImGuiWindowFlags_NoResize;
 		window_flags |= ImGuiWindowFlags_NoCollapse;
 		window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
-		window_flags |= ImGuiWindowFlags_NoMove;
 		if (ImGui::Begin("Camera Settings", 0, window_flags))
 		{
-			ImGui::Button("Change Camera");
+			if (ImGui::Button("Change Camera"))
+			{
+				renderer.toggleFPSCamera();
+			}
 		}
 		ImGui::End();
 	}

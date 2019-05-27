@@ -16,10 +16,10 @@ public:
 	void init();
 	void createTerrainFramebuffer();
 	void render();
-	void renderMiniMap();
+	void renderMiniMap(glm::mat4 transform, glm::vec3 camPos);
 	void setVectorMap(VectorMap* vmap);
 	void toggleWireFrame();
-
+	void toggleFPSCamera();
 	void showBrush(float radius, float strength);
 
 	void showBrushCross(glm::vec2 offset);

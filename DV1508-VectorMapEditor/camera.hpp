@@ -5,6 +5,12 @@
 class Camera
 {
 	bool fpsCamera = false;
+	struct
+	{
+		glm::vec3 pos;
+		glm::vec3 target;
+		glm::vec3 up = { 0.0, 1.0, 0.0 };
+	}fpscam;
 	float mouseSensitivity = 0.008f;
 	float scrollSensitivity = 0.1f;
 	float panSpeed = 0.0011111f;
@@ -22,7 +28,10 @@ class Camera
 	glm::mat4 perspective;
 public:
 	void update();
-
+	void toggleFPS()
+	{
+		fpsCamera = (!fpsCamera) ? (true) : (false);
+	}
 	glm::mat4 getTransform();
 	glm::mat4 getInverse();
 	glm::vec3 getPosition();
