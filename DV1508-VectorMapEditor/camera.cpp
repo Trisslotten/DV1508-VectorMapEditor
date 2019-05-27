@@ -80,7 +80,7 @@ void Camera::update()
 			target,
 			up
 		);
-		std::cout << target.x << " : " << target.y << " : " << target.z << std::endl;
+		
 		auto ws = Window::size();
 		perspective = glm::perspective(glm::radians(fov), ws.x / ws.y, 0.01f, 100.f);
 		transform = perspective * view;
