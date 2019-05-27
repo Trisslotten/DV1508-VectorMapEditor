@@ -219,11 +219,10 @@ void Engine::showMiniMap()
 		window_flags |= ImGuiWindowFlags_NoResize;
 		window_flags |= ImGuiWindowFlags_NoCollapse;
 		window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
-
 		ImTextureID tex = reinterpret_cast<ImTextureID>(minimap.getTextureID());
 		if (ImGui::Begin("Minimap", 0, window_flags))
 		{
-			ImGui::Image(tex, ImVec2(300, 300));
+			ImGui::Image(tex, ImVec2(300, 300), ImVec2(0,1), ImVec2(1,0));
 		}
 		ImGui::End();
 	}
