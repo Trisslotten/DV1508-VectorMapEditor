@@ -244,6 +244,12 @@ glm::vec2 Window::size()
 	return glm::vec2(width, height);
 }
 
+void Window::resetViewport()
+{
+	auto size = Window::size();
+	glViewport(0, 0, size.x, size.y);
+}
+
 glm::vec2 Window::mouseScroll()
 {
 	return scroll;

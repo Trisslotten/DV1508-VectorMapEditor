@@ -30,6 +30,8 @@ namespace Window
 	glm::vec2 mousePosition();
 	glm::vec2 size();
 
+	void resetViewport();
+
 	glm::vec2 mouseScroll();
 
 	// set before open()

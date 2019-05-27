@@ -172,7 +172,7 @@ void Renderer::render()
 
 void Renderer::renderMiniMap(glm::mat4 transform, glm::vec3 camPos)
 {
-
+	glViewport(0, 0, 1024, 1024);
 
 	terrainShader.use();
 	terrainShader.uniform("camTransform", transform);
@@ -190,6 +190,8 @@ void Renderer::renderMiniMap(glm::mat4 transform, glm::vec3 camPos)
 	int numTris = 6 * x*x;
 	glDrawElements(GL_TRIANGLES, numTris, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
+
+	Window::resetViewport();
 }
 void Renderer::setVectorMap(VectorMap * vmap)
 {
