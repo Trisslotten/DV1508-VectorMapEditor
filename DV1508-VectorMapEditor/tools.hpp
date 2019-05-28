@@ -140,4 +140,6 @@ private:
 		std::string name;
 	};
 	std::vector<bezierData> savedBeziers;
+	std::vector<Texture> stockTextures;
+	float stockData[4][4];
 };
