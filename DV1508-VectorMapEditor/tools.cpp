@@ -204,8 +204,7 @@ void ToolCurve::showSpecialGUI()
 	if (ImGui::Begin("Graph editor", 0, window_flags)) {
 		Bezier::bezier(currBezier);
 
-		for (int i = 0; i < 4; i++)
-		{
+		for (int i = 0; i < 4; i++) {
 			if (i % 4 != 0) {
 				ImGui::SameLine();
 			}
@@ -220,7 +219,7 @@ void ToolCurve::showSpecialGUI()
 			ImGui::PopID();
 		}
 
-		if (ImGui::BeginCombo("Saved curves", currBezierName)) {
+		if (ImGui::BeginCombo("", currBezierName)) {
 			for (int i = 0; i < savedBeziers.size(); i++) {
 				bool is_selected = (currBezier == savedBeziers.at(i).data);
 				if (ImGui::Selectable(savedBeziers.at(i).name.c_str(), is_selected)) {
@@ -233,6 +232,9 @@ void ToolCurve::showSpecialGUI()
 			}
 			ImGui::EndCombo();
 		}
+
+		if (ImGui::MenuItem("Save", "")) {}
+		if (ImGui::MenuItem("Delete", "")) {}
 
 	} ImGui::End();
 }
