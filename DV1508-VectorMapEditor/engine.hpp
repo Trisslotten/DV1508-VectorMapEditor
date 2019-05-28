@@ -12,6 +12,7 @@ public:
 	void update();
 	void render();
 private:
+	Texture cube;
 	bool displayOrientationMenu = true;
 	bool displayCameraSettings = false;
 	bool displayMinimap = true;
