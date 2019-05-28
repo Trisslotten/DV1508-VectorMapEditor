@@ -2,6 +2,7 @@
 
 #include "texture.hpp"
 #include "shader.hpp"
+#include <sstream>
 
 class VectorMap;
 
@@ -130,8 +131,13 @@ private:
 
 	ShaderProgram curveShader;
 
-	struct
-	{
+	float* currBezier;
+
+	const char* currBezierName;
+
+	struct bezierData {
 		float* data;
-	} bezierData;
+		std::string name;
+	};
+	std::vector<bezierData> savedBeziers;
 };

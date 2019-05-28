@@ -137,7 +137,6 @@ namespace Bezier {
 
 			// restore cursor pos
 			ImGui::SetCursorScreenPos(ImVec2(graphBox.Min.x, graphBox.Max.y + circleRadius)); // :P
-		
 
 		return changed;
 	}
