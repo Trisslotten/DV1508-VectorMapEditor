@@ -105,12 +105,33 @@ void Renderer::render()
 
 	glm::mat4 cam = camera.getTransform();
 
-	terrainShader.use();
-	terrainShader.uniform("camTransform", cam);
-	terrainShader.uniform("camPos", camera.getPosition());
-	terrainShader.uniform("vectorMap", 1);
-	terrainShader.uniform("brushRadius", brushRadius);
-	terrainShader.uniform("brushStrength", brushStrength);
+	switch (viewMode) {
+	case VIEWMODE_SHADED:
+		terrainShader.use();
+		terrainShader.uniform("camTransform", cam);
+		terrainShader.uniform("camPos", camera.getPosition());
+		terrainShader.uniform("vectorMap", 1);
+		terrainShader.uniform("brushRadius", brushRadius);
+		terrainShader.uniform("brushStrength", brushStrength);
+		break;
+	case VIEWMODE_TEXTURED:
+		texturedShader.use();
+		texturedShader.uniform("camTransform", cam);
+		texturedShader.uniform("camPos", camera.getPosition());
+		texturedShader.uniform("vectorMap", 1);
+		texturedShader.uniform("brushRadius", brushRadius);
+		texturedShader.uniform("brushStrength", brushStrength);
+		break;
+	case VIEWMODE_NORMALS:
+		normalsShader.use();
+		normalsShader.uniform("camTransform", cam);
+		normalsShader.uniform("camPos", camera.getPosition());
+		normalsShader.uniform("vectorMap", 1);
+		normalsShader.uniform("brushRadius", brushRadius);
+		normalsShader.uniform("brushStrength", brushStrength);
+		break;
+	}
+	
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, uvSSBO);
 
@@ -203,6 +224,28 @@ void Renderer::toggleWireFrame()
 	wireframe = (wireframe == false) ? true : false;
 }
 
+void Renderer::setViewMode(int mode) {
+	if (mode == VIEWMODE_WIREFRAME) {
+		wireframe = true;
+		viewMode = 0;
+	}
+	else {
+		wireframe = false;
+		viewMode = 0;
+	}
+	switch (mode) {
+	case VIEWMODE_SHADED:
+		viewMode = VIEWMODE_SHADED;
+		break;
+	case VIEWMODE_TEXTURED:
+		viewMode = VIEWMODE_TEXTURED;
+		break;
+	case VIEWMODE_NORMALS:
+		viewMode = VIEWMODE_NORMALS;
+		break;
+	}
+}
+
 void Renderer::toggleFPSCamera()
 {
 	camera.toggleFPS();
@@ -277,12 +320,21 @@ void Renderer::initShaders()
 	terrainShader.add("terrain.frag");
 	terrainShader.compile();
 
+	texturedShader.add("terrain.vert");
+	texturedShader.add("terrainTextured.frag");
+	texturedShader.compile();
+
+	normalsShader.add("terrain.vert");
+	normalsShader.add("terrainNormals.frag");
+	normalsShader.compile();
+
 	quadShader.add("quad.vert");
 	quadShader.add("quad.frag");
 	quadShader.compile();
 
 	mousePickingShader.add("mousepicking.comp");
 	mousePickingShader.compile();
+
 }
 
 void Renderer::initTerrainMesh()

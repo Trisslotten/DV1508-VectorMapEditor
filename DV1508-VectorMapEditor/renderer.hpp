@@ -10,6 +10,13 @@
 #include "vectormap.hpp"
 #include "minimap.hpp"
 #include "texture.hpp"
+
+#define VIEWMODE_SHADED 0
+#define VIEWMODE_TEXTURED 1
+#define VIEWMODE_NORMALS 2
+#define VIEWMODE_WIREFRAME 3
+#define VIEWMODE_AUTO 4
+
 class Renderer
 {
 public:
@@ -18,6 +25,7 @@ public:
 	void render();
 	void renderMiniMap(glm::mat4 transform, glm::vec3 camPos);
 	void setVectorMap(VectorMap* vmap);
+	void setViewMode(int mode);
 	void toggleWireFrame();
 	void toggleFPSCamera();
 	void showBrush(float radius, float strength);
@@ -34,6 +42,8 @@ private:
 	Timer timer;
 	bool wireframe = false;
 	ShaderProgram terrainShader;
+	ShaderProgram texturedShader;
+	ShaderProgram normalsShader;
 	int terrainMeshRes = 1024;
 	GLuint terrainEBO = 0;
 	GLuint terrainVBO = 0;
@@ -61,4 +71,5 @@ private:
 	float brushStrength = 0.f;
 
 	VectorMap* vectorMap = nullptr;
+	int viewMode = 0;
 };

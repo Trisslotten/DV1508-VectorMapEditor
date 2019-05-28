@@ -164,7 +164,7 @@ void ToolCurve::use(GLuint mouseUVSSBO, float radius, float strength)
 		curveShader.uniform("radius", radius);
 		curveShader.uniform("strength", strength);
 		curveShader.uniform("imgSize", vMapSize);
-		curveShader.uniformv("data", 4, bezierData.data);
+		curveShader.uniformv("data", 4, currBezier);
 
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, mouseUVSSBO);
 
@@ -201,9 +201,41 @@ void ToolCurve::showSpecialGUI()
 	window_flags |= ImGuiWindowFlags_NoResize;
 	window_flags |= ImGuiWindowFlags_NoCollapse;
 	window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
-	if (ImGui::Begin("Graph editor", 0, window_flags))
-	{
-		Bezier::bezier(bezierData.data);
+	if (ImGui::Begin("Graph editor", 0, window_flags)) {
+		Bezier::bezier(currBezier);
+
+		for (int i = 0; i < 4; i++) {
+			if (i % 4 != 0) {
+				ImGui::SameLine();
+			}
+
+			ImTextureID tex = reinterpret_cast<ImTextureID>(stockTextures.at(i).getID());
+			ImGui::PushID(tex);
+			if (ImGui::ImageButton(tex, ImVec2(32, 32))) {
+				for (int j = 0; j < 4; j++) {
+					currBezier[j] = stockData[i][j];
+				}
+			}
+			ImGui::PopID();
+		}
+
+		if (ImGui::BeginCombo("", currBezierName)) {
+			for (int i = 0; i < savedBeziers.size(); i++) {
+				bool is_selected = (currBezier == savedBeziers.at(i).data);
+				if (ImGui::Selectable(savedBeziers.at(i).name.c_str(), is_selected)) {
+					currBezier = savedBeziers.at(i).data;
+					currBezierName = savedBeziers.at(i).name.c_str();
+						if (is_selected) {
+							ImGui::SetItemDefaultFocus();
+						}
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+		if (ImGui::MenuItem("Save", "")) {}
+		if (ImGui::MenuItem("Delete", "")) {}
+
 	} ImGui::End();
 }
 
@@ -214,17 +246,62 @@ std::string ToolCurve::name()
 
 void ToolCurve::vInit()
 {
-	bezierData.data = new float[4];
+	currBezier = new float[4];
+	currBezierName = "User saved curves";
 	for (int i = 0; i < 4; i++)
 	{
 		if (i < 2)
 		{
-			bezierData.data[i] = 0.f;
+			currBezier[i] = 0.f;
 		}
 		else
 		{
-			bezierData.data[i] = 1.f;
+			currBezier[i] = 1.f;
 		}
+	}
+	for (int i = 0; i < 5; i++) {
+		float* b = new float[4];
+		for (int j = 0; j < 4; j++)
+		{
+			if (j < 2)
+			{
+				b[j] = (float) (i / 5.f);
+			}
+			else
+			{
+				b[j] = 1.f;
+			}
+		}
+		std::stringstream ss;
+		ss << "Curve_" << i;
+		savedBeziers.push_back({ b, ss.str() });
+	}
+
+	stockData[0][0] = 0.f;
+	stockData[0][1] = 0.f;
+	stockData[0][2] = 1.f;
+	stockData[0][3] = 1.f;
+
+	stockData[1][0] = 0.f;
+	stockData[1][1] = 0.5f;
+	stockData[1][2] = 0.5f;
+	stockData[1][3] = 1.f;
+
+	stockData[2][0] = 0.5f;
+	stockData[2][1] = 0.f;
+	stockData[2][2] = 1.f;
+	stockData[2][3] = 0.5f;
+
+	stockData[3][0] = 1.f;
+	stockData[3][1] = 0.f;
+	stockData[3][2] = 0.f;
+	stockData[3][3] = 1.f;
+
+	for (int i = 0; i < 4; i++) {
+		stockTextures.push_back(Texture());
+		std::stringstream ss;
+		ss << "assets/BST_" << i + 1 << ".png";
+		stockTextures.at(i).loadTexture(ss.str());
 	}
 
 	curveShader.add("curve.comp");

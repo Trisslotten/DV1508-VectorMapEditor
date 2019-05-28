@@ -323,12 +323,19 @@ void Engine::showShadingMenu()
 	window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 	if (ImGui::Begin("Shading", 0, window_flags))
 	{
-		ImGui::Button("Shaded");
-		ImGui::Button("Textured");
-		ImGui::Button("Normals");
+		if (ImGui::Button("Shaded")) {
+			renderer.setViewMode(VIEWMODE_SHADED);
+		}
+		if (ImGui::Button("Textured")) {
+			renderer.setViewMode(VIEWMODE_TEXTURED);
+		}
+		if (ImGui::Button("Normals")) {
+			renderer.setViewMode(VIEWMODE_NORMALS);
+		}
 		if (ImGui::Button("Wireframe"))
 		{
-			renderer.toggleWireFrame();
+			//renderer.toggleWireFrame();
+			renderer.setViewMode(VIEWMODE_WIREFRAME);
 		}
 	}
 	ImGui::End();
