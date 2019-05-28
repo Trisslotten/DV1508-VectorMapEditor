@@ -41,6 +41,7 @@ void Engine::init()
 			bezierData.data[i] = 1.f;
 		}
 	}
+	cube.loadTexture("assets/output-onlinepngtools.png");
 }
 
 void Engine::update()
@@ -300,7 +301,7 @@ void Engine::showOrientationMenu()
 		window_flags |= ImGuiWindowFlags_NoCollapse;
 		window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 		window_flags |= ImGuiWindowFlags_NoMove;
-		if (ImGui::Begin("Orientation", 0, window_flags))
+		/*if (ImGui::Begin("Orientation", 0, window_flags))
 		{
 			ImGui::Text("   @ . . . . @   ");
 			ImGui::Text("   .\\        .\\   ");
@@ -312,7 +313,12 @@ void Engine::showOrientationMenu()
 			ImGui::Text("     \\.        \\.   ");
 			ImGui::Text("      @ . . . . @   ");
 		}
-		ImGui::End();
+		ImGui::End();*/
+		if (ImGui::Begin("Orientation", 0, window_flags))
+		{
+			ImTextureID tex = reinterpret_cast<ImTextureID>(cube.getID());
+			ImGui::Image(tex, ImVec2(150, 150));
+		} ImGui::End();
 	}
 }
 
