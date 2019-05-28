@@ -15,7 +15,8 @@ class Camera
 		bool fpsactive = false;
 		glm::vec3 pos;
 		glm::vec3 target;
-		glm::vec3 forward = glm::vec3(0.0f, 0.0f, -1.0f);
+		glm::vec3 forward = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 lastlook;
 		glm::vec3 up = { 0.0, 1.0, 0.0 };
 		float yaw = 0.f;
 		float pitch = -0.5f;

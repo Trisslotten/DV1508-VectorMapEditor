@@ -232,7 +232,8 @@ void Engine::showCameraSettings()
 			if (fpscam)
 			{
 				ImGui::Text("Rightclick to enter/exit camera-mode");
-				ImGui::SliderFloat("Walking speed", &camera::camspeed, 0.5f, 1.f);
+				
+				ImGui::SliderFloat("Walking speed", &camera::camspeed, 0.1f, 1.f);
 				ImGui::SliderInt("Distance from ground", &camera::camdistance, 0, 100);
 			}
 		}

@@ -30,13 +30,21 @@ void Camera::update()
 			glm::vec3 cameraUp = glm::cross(fpscam.forward, cameraRight);
 			float cameraSpeed = 0.05f; // adjust accordingly
 			if (glfwGetKey(Window::getGLFWWindow(), GLFW_KEY_W) == GLFW_PRESS)
+			{
 				fpscam.pos -= cameraSpeed * fpscam.forward;
+			}
 			if (glfwGetKey(Window::getGLFWWindow(), GLFW_KEY_S) == GLFW_PRESS)
+			{
 				fpscam.pos += cameraSpeed * fpscam.forward;
+			}
 			if (glfwGetKey(Window::getGLFWWindow(), GLFW_KEY_A) == GLFW_PRESS)
+			{
 				fpscam.pos += glm::normalize(glm::cross(fpscam.forward, cameraUp)) * cameraSpeed;
+			}
 			if (glfwGetKey(Window::getGLFWWindow(), GLFW_KEY_D) == GLFW_PRESS)
+			{
 				fpscam.pos -= glm::normalize(glm::cross(fpscam.forward, cameraUp)) * cameraSpeed;
+			}
 			//std::cout << fpscam.forward.x << " : " << fpscam.forward.y << " : " << fpscam.forward.z << std::endl;
 			fpscam.target.x = cos(glm::radians(fpscam.pitch)) * cos(glm::radians(fpscam.yaw));
 			fpscam.target.y = sin(glm::radians(fpscam.pitch));
@@ -52,9 +60,13 @@ void Camera::update()
 			fpscam.yaw += xoffset;
 			fpscam.pitch += yoffset;
 			if (fpscam.pitch > 89.0f)
+			{
 				fpscam.pitch = 89.0f;
+			}
 			if (fpscam.pitch < -89.0f)
+			{
 				fpscam.pitch = -89.0f;
+			}
 			glm::vec3 front;
 			front.x = cos(glm::radians(fpscam.pitch)) * cos(glm::radians(fpscam.yaw));
 			front.y = sin(glm::radians(fpscam.pitch));
@@ -65,12 +77,12 @@ void Camera::update()
 			
 			fpscam.lastx = xpos;
 			fpscam.lasty = ypos;
-			
+			fpscam.lastlook = fpscam.pos + fpscam.forward;
 		}
 		else
 		{
 			glfwSetInputMode(Window::getGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			view = glm::lookAt(fpscam.pos, fpscam.pos + fpscam.forward, fpscam.up);
+			view = glm::lookAt(fpscam.pos, fpscam.lastlook, fpscam.up);
 		}
 		perspective = glm::perspective(glm::radians(fov), ws.x / ws.y, 0.01f, 100.f);
 		transform = perspective * view;
@@ -139,7 +151,7 @@ void Camera::update()
 		perspective = glm::perspective(glm::radians(fov), ws.x / ws.y, 0.01f, 100.f);
 		transform = perspective * view;
 		fpscam.pos = position;
-		fpscam.target = target;
+		fpscam.target = fpscam.lastlook = target;
 		fpscam.forward = target;
 		fpscam.lastx = ws.x / 2.0, fpscam.lasty = ws.y / 2.0;
 	}
