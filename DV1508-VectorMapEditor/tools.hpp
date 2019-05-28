@@ -114,3 +114,24 @@ private:
 
 	ShaderProgram expandShader;
 };
+
+class ToolCurve : public Tool
+{
+public:
+	virtual void use(GLuint mouseUVSSBO, float radius, float strength) override;
+	virtual bool hasGUI() override;
+	virtual void showGUI() override;
+	virtual bool hasSpecialGUI() override;
+	virtual void showSpecialGUI() override;
+	virtual std::string name() override;
+private:
+	virtual void vInit() override;
+	virtual std::string iconFile() override;
+
+	ShaderProgram curveShader;
+
+	struct
+	{
+		float* data;
+	} bezierData;
+};

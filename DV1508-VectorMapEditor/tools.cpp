@@ -1,7 +1,8 @@
 #include "tools.hpp"
 #include <glm/glm.hpp>
 #include "vectormap.hpp"
-
+#include "imgui/imgui.h"
+#include "Bezier.hpp"
 
 void ToolAddHeight::vInit()
 {
@@ -146,4 +147,91 @@ void ToolExpand::vInit()
 std::string ToolExpand::iconFile()
 {
 	return "icon_tool_expand.png";
+}
+
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+
+void ToolCurve::use(GLuint mouseUVSSBO, float radius, float strength)
+{
+	if (vectorMap)
+	{
+		curveShader.use();
+
+		auto vMapSize = vectorMap->getSize();
+
+		curveShader.uniform("radius", radius);
+		curveShader.uniform("strength", strength);
+		curveShader.uniform("imgSize", vMapSize);
+		curveShader.uniformv("data", 4, bezierData.data);
+
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, mouseUVSSBO);
+
+		vectorMap->bindAsImage(2);
+
+		float size = glm::ceil(2.f * radius * vMapSize.x);
+		float groupSize = 16.f;
+		int numGroups = glm::ceil(size / groupSize);
+		glDispatchCompute(numGroups, numGroups, 1);
+
+		glBindImageTexture(2, 0, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+
+		glMemoryBarrier(GL_ALL_BARRIER_BITS);
+	}
+}
+
+bool ToolCurve::hasGUI()
+{
+	return false;
+}
+
+void ToolCurve::showGUI()
+{
+}
+
+bool ToolCurve::hasSpecialGUI()
+{
+	return true;
+}
+
+void ToolCurve::showSpecialGUI()
+{
+	ImGuiWindowFlags window_flags = 0;
+	window_flags |= ImGuiWindowFlags_NoResize;
+	window_flags |= ImGuiWindowFlags_NoCollapse;
+	window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
+	if (ImGui::Begin("Graph editor", 0, window_flags))
+	{
+		Bezier::bezier(bezierData.data);
+	} ImGui::End();
+}
+
+std::string ToolCurve::name()
+{
+	return "Curve";
+}
+
+void ToolCurve::vInit()
+{
+	bezierData.data = new float[4];
+	for (int i = 0; i < 4; i++)
+	{
+		if (i < 2)
+		{
+			bezierData.data[i] = 0.f;
+		}
+		else
+		{
+			bezierData.data[i] = 1.f;
+		}
+	}
+
+	curveShader.add("curve.comp");
+	curveShader.compile();
+}
+
+std::string ToolCurve::iconFile()
+{
+	return "icon_tool_curve.png";
 }

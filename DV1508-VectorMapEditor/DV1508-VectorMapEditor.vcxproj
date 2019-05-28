@@ -122,6 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\addheight.comp" />
+    <None Include="shaders\curve.comp" />
     <None Include="shaders\expand.comp" />
     <None Include="shaders\mousepicking.comp" />
     <None Include="shaders\terrain.frag" />

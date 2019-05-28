@@ -5,8 +5,6 @@
 
 #include "input.hpp"
 
-#include "Bezier.hpp"
-
 void Engine::init()
 {
 	ImGui::CreateContext();
@@ -24,6 +22,7 @@ void Engine::init()
 	tools.push_back(new ToolAddHeight());
 	tools.push_back(new ToolExpand());
 	tools.push_back(new ToolSmoothen());
+	tools.push_back(new ToolCurve());
 	for (auto tool : tools)
 	{
 		tool->init();
@@ -32,15 +31,7 @@ void Engine::init()
 	glm::vec3 clearColor{ 0.7f };
 	glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0);
 
-	bezierData.data = new float[4];
-	for (int i = 0; i < 4; i++) {
-		if (i < 2) {
-			bezierData.data[i] = 0.f;
-		}
-		else {
-			bezierData.data[i] = 1.f;
-		}
-	}
+
 }
 
 void Engine::update()
@@ -58,9 +49,13 @@ void Engine::update()
 	showOrientationMenu();
 	showShadingMenu();
 	showMiniMap();
-	showGraphEditor();
 	showCameraSettings();
 	//ImGui::ShowDemoWindow();
+	if (currentTool && currentTool->hasSpecialGUI())
+	{
+		currentTool->showSpecialGUI();
+	}
+
 
 	ImGui::EndFrame();
 
@@ -199,16 +194,6 @@ void Engine::showMenuBar()
 		}
 		ImGui::EndMainMenuBar();
 	}
-}
-
-void Engine::showGraphEditor() {
-	ImGuiWindowFlags window_flags = 0;
-	window_flags |= ImGuiWindowFlags_NoResize;
-	window_flags |= ImGuiWindowFlags_NoCollapse;
-	window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
-	if (ImGui::Begin("Graph editor", 0, window_flags)) {
-		Bezier::bezier(bezierData.data);
-	} ImGui::End();
 }
 
 void Engine::showMiniMap()

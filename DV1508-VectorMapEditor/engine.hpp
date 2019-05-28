@@ -27,7 +27,6 @@ private:
 
 	bool canUseTool();
 
-	void showGraphEditor();
 	Renderer renderer;
 	VectorMap vmap;
 
@@ -57,7 +56,5 @@ private:
 		const float maxStrength = 10.f;
 	} brushSettings;
 
-	struct {
-		float* data;
-	} bezierData;
+
 };

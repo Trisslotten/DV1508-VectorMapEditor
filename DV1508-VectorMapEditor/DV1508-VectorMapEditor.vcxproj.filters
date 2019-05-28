@@ -157,5 +157,8 @@
     <None Include="shaders\expand.comp">
       <Filter>Source Files\graphics\shaders</Filter>
     </None>
+    <None Include="shaders\curve.comp">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

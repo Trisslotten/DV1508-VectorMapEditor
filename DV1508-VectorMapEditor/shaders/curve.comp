@@ -1,0 +1,42 @@
+#version 440 core
+
+layout(local_size_x = 16, local_size_y = 16) in;
+
+layout(binding = 2, rgba32f) uniform image2D img;
+
+layout(std430, binding = 1) buffer buf
+{
+	vec2 brushUV;
+};
+
+uniform float radius;
+uniform float strength;
+uniform vec2 imgSize;
+
+uniform float data[4];
+
+
+
+void main()
+{
+	ivec2 i = ivec2(gl_GlobalInvocationID.xy);
+	if(i.x >= 0 && i.x < imgSize.x && i.y >= 0 && i.y < imgSize.y)
+	{
+		vec2 uv = vec2(i) / imgSize + brushUV - radius;
+
+		ivec2 pixel = ivec2(uv * imgSize);
+
+		vec4 disp = imageLoad(img, pixel);
+
+		float distance = length(uv - brushUV);
+
+		// 0.0 till 1.0
+		float t = distance / radius;
+		if(t <= 1.0)
+		{
+			
+		}
+
+		imageStore(img, pixel, disp);
+	}
+}
