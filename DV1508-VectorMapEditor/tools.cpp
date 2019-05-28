@@ -204,6 +204,22 @@ void ToolCurve::showSpecialGUI()
 	if (ImGui::Begin("Graph editor", 0, window_flags)) {
 		Bezier::bezier(currBezier);
 
+		for (int i = 0; i < 4; i++)
+		{
+			if (i % 4 != 0) {
+				ImGui::SameLine();
+			}
+
+			ImTextureID tex = reinterpret_cast<ImTextureID>(stockTextures.at(i).getID());
+			ImGui::PushID(tex);
+			if (ImGui::ImageButton(tex, ImVec2(32, 32))) {
+				for (int j = 0; j < 4; j++) {
+					currBezier[j] = stockData[i][j];
+				}
+			}
+			ImGui::PopID();
+		}
+
 		if (ImGui::BeginCombo("Saved curves", currBezierName)) {
 			for (int i = 0; i < savedBeziers.size(); i++) {
 				bool is_selected = (currBezier == savedBeziers.at(i).data);
@@ -229,7 +245,7 @@ std::string ToolCurve::name()
 void ToolCurve::vInit()
 {
 	currBezier = new float[4];
-	currBezierName = "No curve selected";
+	currBezierName = "User saved curves";
 	for (int i = 0; i < 4; i++)
 	{
 		if (i < 2)
@@ -258,6 +274,34 @@ void ToolCurve::vInit()
 		ss << "Curve_" << i;
 		savedBeziers.push_back({ b, ss.str() });
 	}
+
+	stockData[0][0] = 0.f;
+	stockData[0][1] = 0.f;
+	stockData[0][2] = 1.f;
+	stockData[0][3] = 1.f;
+
+	stockData[1][0] = 0.f;
+	stockData[1][1] = 0.5f;
+	stockData[1][2] = 0.5f;
+	stockData[1][3] = 1.f;
+
+	stockData[2][0] = 0.5f;
+	stockData[2][1] = 0.f;
+	stockData[2][2] = 1.f;
+	stockData[2][3] = 0.5f;
+
+	stockData[3][0] = 1.f;
+	stockData[3][1] = 0.f;
+	stockData[3][2] = 0.f;
+	stockData[3][3] = 1.f;
+
+	for (int i = 0; i < 4; i++) {
+		stockTextures.push_back(Texture());
+		std::stringstream ss;
+		ss << "assets/BST_" << i + 1 << ".png";
+		stockTextures.at(i).loadTexture(ss.str());
+	}
+
 	curveShader.add("curve.comp");
 	curveShader.compile();
 }
