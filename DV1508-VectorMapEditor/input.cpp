@@ -58,6 +58,11 @@ bool Input::isMouseButtonDown(int key)
 	return Window::mouseButtonDown(key);
 }
 
+bool Input::isMouseButtonPressed(int button)
+{
+	return false;
+}
+
 bool Input::isButtonPressed(int button)
 {
 	if (buttons[button] > 0)

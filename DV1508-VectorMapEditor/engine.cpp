@@ -4,7 +4,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 
 #include "input.hpp"
-
+#include "camera.hpp"
 void Engine::init()
 {
 	ImGui::CreateContext();
@@ -222,9 +222,18 @@ void Engine::showCameraSettings()
 		window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 		if (ImGui::Begin("Camera Settings", 0, window_flags))
 		{
-			if (ImGui::Button("Change Camera"))
+			std::string text;
+			(!fpscam) ? (text = "Change to FPS-Cam") : (text = "Change to Drag-Cam");
+			if (ImGui::Button(text.c_str()))
 			{
 				renderer.toggleFPSCamera();
+				fpscam = (!fpscam) ? (true) : (false);
+			}
+			if (fpscam)
+			{
+				ImGui::Text("Rightclick to enter/exit camera-mode");
+				ImGui::SliderFloat("Walking speed", &camera::camspeed, 0.5f, 1.f);
+				ImGui::SliderInt("Distance from ground", &camera::camdistance, 0, 100);
 			}
 		}
 		ImGui::End();

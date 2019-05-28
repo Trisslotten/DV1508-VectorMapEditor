@@ -1,3 +1,4 @@
+#pragma once
 #include "camera.hpp"
 
 #include <iostream>
@@ -6,18 +7,71 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
-#include <GLFW\glfw3.h>
+
 #include "imgui/imgui.h"
 void Camera::update()
 {
 	if (fpsCamera)
 	{
 		auto ws = Window::size();
-		view = glm::lookAt(
-			fpscam.pos,       
-			fpscam.target, 
-			fpscam.up
-		);
+		int newState = glfwGetMouseButton(Window::getGLFWWindow(), GLFW_MOUSE_BUTTON_RIGHT);
+		if (newState == GLFW_RELEASE && camera::oldState == GLFW_PRESS) 
+		{
+			fpscam.fpsactive = (!fpscam.fpsactive) ? (true) : (false);
+		}
+		camera::oldState = newState;
+		if (fpscam.fpsactive)
+		{
+			auto size = Window::size();
+			
+			glfwSetInputMode(Window::getGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			fpscam.forward = glm::normalize(fpscam.pos - fpscam.target);
+			glm::vec3 cameraRight = glm::normalize(glm::cross(fpscam.up, fpscam.forward));
+			glm::vec3 cameraUp = glm::cross(fpscam.forward, cameraRight);
+			float cameraSpeed = 0.05f; // adjust accordingly
+			if (glfwGetKey(Window::getGLFWWindow(), GLFW_KEY_W) == GLFW_PRESS)
+				fpscam.pos -= cameraSpeed * fpscam.forward;
+			if (glfwGetKey(Window::getGLFWWindow(), GLFW_KEY_S) == GLFW_PRESS)
+				fpscam.pos += cameraSpeed * fpscam.forward;
+			if (glfwGetKey(Window::getGLFWWindow(), GLFW_KEY_A) == GLFW_PRESS)
+				fpscam.pos += glm::normalize(glm::cross(fpscam.forward, cameraUp)) * cameraSpeed;
+			if (glfwGetKey(Window::getGLFWWindow(), GLFW_KEY_D) == GLFW_PRESS)
+				fpscam.pos -= glm::normalize(glm::cross(fpscam.forward, cameraUp)) * cameraSpeed;
+			//std::cout << fpscam.forward.x << " : " << fpscam.forward.y << " : " << fpscam.forward.z << std::endl;
+			fpscam.target.x = cos(glm::radians(fpscam.pitch)) * cos(glm::radians(fpscam.yaw));
+			fpscam.target.y = sin(glm::radians(fpscam.pitch));
+			fpscam.target.z = cos(glm::radians(fpscam.pitch)) * sin(glm::radians(fpscam.yaw));
+			double xpos, ypos;
+			glfwGetCursorPos(Window::getGLFWWindow(), &xpos, &ypos);
+			double xoffset = xpos - fpscam.lastx;
+			double yoffset = fpscam.lasty - ypos;
+
+			float sensitivity = 0.05f;
+			xoffset *= sensitivity;
+			yoffset *= sensitivity;
+			fpscam.yaw += xoffset;
+			fpscam.pitch += yoffset;
+			if (fpscam.pitch > 89.0f)
+				fpscam.pitch = 89.0f;
+			if (fpscam.pitch < -89.0f)
+				fpscam.pitch = -89.0f;
+			glm::vec3 front;
+			front.x = cos(glm::radians(fpscam.pitch)) * cos(glm::radians(fpscam.yaw));
+			front.y = sin(glm::radians(fpscam.pitch));
+			front.z = cos(glm::radians(fpscam.pitch)) * sin(glm::radians(fpscam.yaw));
+			fpscam.forward = glm::normalize(front);
+			
+			view = glm::lookAt(fpscam.pos, fpscam.pos + fpscam.forward, fpscam.up);
+			
+			fpscam.lastx = xpos;
+			fpscam.lasty = ypos;
+			
+		}
+		else
+		{
+			glfwSetInputMode(Window::getGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			view = glm::lookAt(fpscam.pos, fpscam.pos + fpscam.forward, fpscam.up);
+		}
 		perspective = glm::perspective(glm::radians(fov), ws.x / ws.y, 0.01f, 100.f);
 		transform = perspective * view;
 	}
@@ -86,7 +140,10 @@ void Camera::update()
 		transform = perspective * view;
 		fpscam.pos = position;
 		fpscam.target = target;
+		fpscam.forward = target;
+		fpscam.lastx = ws.x / 2.0, fpscam.lasty = ws.y / 2.0;
 	}
+
 }
 
 glm::mat4 Camera::getTransform()

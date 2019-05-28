@@ -11,6 +11,7 @@ namespace Input
 	// TODO implement if needed
 	//bool isKeyPressedRepeat(int key);
 	bool isMouseButtonDown(int button);
+	bool isMouseButtonPressed(int button);
 	bool isButtonPressed(int button);
 	void reset();
 	glm::vec2 mouseMovement();
