@@ -25,6 +25,7 @@ private:
 	void showShadingMenu();
 	void showMiniMap();
 	void showCameraSettings();
+	bool fpscam = false;
 
 	bool canUseTool();
 
