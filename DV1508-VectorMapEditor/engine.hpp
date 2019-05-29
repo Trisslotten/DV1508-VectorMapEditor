@@ -43,6 +43,8 @@ private:
 	bool brushCrossActive = false;
 	glm::vec2 brushCrossNDC;
 
+	std::string viewNameText = "Shaded";
+
 	struct
 	{
 		// Hack, don't use

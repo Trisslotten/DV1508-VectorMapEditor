@@ -263,6 +263,12 @@ void Engine::showToolsMenu()
 			if (ImGui::ImageButton(tex, ImVec2(32, 32)))
 			{
 				currentTool = tools[i];
+				if (i == 0 && renderer.ViewModeIsAuto()) {
+					renderer.setViewMode(VIEWMODE_SHADED);
+				}
+				if (i == 1 && renderer.ViewModeIsAuto()) {
+					renderer.setViewMode(VIEWMODE_NORMALS);
+				}
 			}
 			ImGui::PopID();
 		}
@@ -322,22 +328,40 @@ void Engine::showShadingMenu()
 	window_flags |= ImGuiWindowFlags_NoResize;
 	window_flags |= ImGuiWindowFlags_NoCollapse;
 	window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
+	
 	if (ImGui::Begin("Shading", 0, window_flags))
 	{
+		//std::string viewNameText = "Selected: Shaded";
+		ImGui::PushItemWidth(300);
 		if (ImGui::Button("Shaded")) {
 			renderer.setViewMode(VIEWMODE_SHADED);
+			renderer.setViewModeAutomatic(false);
+			viewNameText = "Shaded";
 		}
 		if (ImGui::Button("Textured")) {
 			renderer.setViewMode(VIEWMODE_TEXTURED);
+			renderer.setViewModeAutomatic(false);
+			viewNameText = "Textured";
 		}
 		if (ImGui::Button("Normals")) {
 			renderer.setViewMode(VIEWMODE_NORMALS);
+			renderer.setViewModeAutomatic(false);
+			viewNameText = "Normals";
 		}
 		if (ImGui::Button("Wireframe"))
 		{
 			//renderer.toggleWireFrame();
 			renderer.setViewMode(VIEWMODE_WIREFRAME);
+			renderer.setViewModeAutomatic(false);
+			viewNameText = "Wireframe";
 		}
+		if (ImGui::Button("Auto"))
+		{
+			renderer.setViewModeAutomatic(true);
+			viewNameText = "Auto";
+		}
+		ImGui::Text(viewNameText.c_str());
+		
 	}
 	ImGui::End();
 }
