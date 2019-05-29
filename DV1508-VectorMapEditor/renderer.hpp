@@ -26,6 +26,7 @@ public:
 	void renderMiniMap(glm::mat4 transform, glm::vec3 camPos);
 	void setVectorMap(VectorMap* vmap);
 	void setViewMode(int mode);
+	void setViewModeAutomatic(bool val);
 	void toggleWireFrame();
 	void toggleFPSCamera();
 	void showBrush(float radius, float strength);
@@ -34,6 +35,9 @@ public:
 
 	// returns Shader Storage Buffer Object with uv
 	GLuint mouseTerrainIntersection();
+	bool ViewModeIsAuto() {
+		return autoview;
+	}
 private:
 	void initShaders();
 	void initTerrainMesh();
@@ -72,4 +76,5 @@ private:
 
 	VectorMap* vectorMap = nullptr;
 	int viewMode = 0;
+	bool autoview = false;
 };

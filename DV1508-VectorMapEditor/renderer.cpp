@@ -246,6 +246,11 @@ void Renderer::setViewMode(int mode) {
 	}
 }
 
+void Renderer::setViewModeAutomatic(bool val)
+{
+	autoview = val;
+}
+
 void Renderer::toggleFPSCamera()
 {
 	camera.toggleFPS();
