@@ -176,7 +176,7 @@ void Engine::showMenuBar()
 			if (ImGui::MenuItem("Shading", "")) {}
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Camera"))
+		if (ImGui::BeginMenu("Navigation"))
 		{
 			if(ImGui::MenuItem("Show Settings", "", displayCameraSettings))
 			{
